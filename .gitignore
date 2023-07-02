@@ -1,3 +1,5 @@
 *.jpg
 *.pdf
 *.png
+venvSensores
+__pycache__
