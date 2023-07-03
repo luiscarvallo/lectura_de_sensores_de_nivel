@@ -1,5 +1,5 @@
 from config.database import Base
-from sqlalchemy import Column, String, Integer, DateTime, Float
+from sqlalchemy import Column, String, Integer, DateTime, Float, ForeignKey
 
 class Register(Base):
 
@@ -7,7 +7,7 @@ class Register(Base):
 
     id = Column(Integer, primary_key = True)
     date_time = Column(DateTime, server_default=func.now())
-    instrument_address = Column(Integer)
+    controller_address = Column(Integer, ForeignKey("controllers.slaveaddress"))
     register_name = Column(String) # Para los sensores de nivel serían los nombres de tanques.
-    level = Column(Float)
+    meassure = Column(Float)
     meassure_unit = Column(String)

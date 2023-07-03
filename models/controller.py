@@ -1,12 +1,12 @@
 from config.database import Base
 from sqlalchemy import Column, String, Integer, DateTime, Float
 
-class Instrument(Base):
+class Controller(Base):
 
-    __tablename__ = "instruments"
+    __tablename__ = "controllers"
 
     slaveaddress = Column(Integer, primary_key = True)
-    instrument_name = Column(String)
+    name = Column(String)
     port = Column(Integer)
     mode = Column(String)
     baudrate = Column(Integer)

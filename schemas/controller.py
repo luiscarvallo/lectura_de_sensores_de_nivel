@@ -1,8 +1,8 @@
 from pydantic import BaseModel, Optional
 
-class Instrument(BaseModel):
+class Controller(BaseModel):
     slaveaddress : Optional[int] = None
-    instrument_name : str
+    name : str
     port : int
     mode : str
     baudrate : int
@@ -13,7 +13,7 @@ class Instrument(BaseModel):
         schema_extra = {
             "example": {
                 "slaveaddress": 1,
-                "instrument_name": "itc_650",
+                "name": "itc_650",
                 "port": "COM5",
                 "mode": "rtu",
                 "baudrate": 115200,
