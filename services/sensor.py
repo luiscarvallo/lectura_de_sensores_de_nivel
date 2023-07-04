@@ -44,7 +44,7 @@ class ControllerService():
         
         result.name = controller.name
         result.port = controller.port
-        result.mode = instrument.mode
+        result.mode = controller.mode
         result.baudrate = controller.baudrate
         result.bytesize = controller.bytesize
         result.parity = controller.parity
