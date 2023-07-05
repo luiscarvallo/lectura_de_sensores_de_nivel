@@ -55,12 +55,10 @@ class ControllerService():
         self.db.delete(result)
         self.db.commit()
 
-    def read_registers(self):
-        y = [register/100 for register in itc_650.read_registers(registeraddress=1, number_of_registers=db.query(RegisterModel).count())] # Lectura de los registros, iniciando desde el 01h hasta la longitud de la lista x, agregando los puntos decimales.
-                                                                                                                 # 01h--> y[0]: P-ACID-1095. Terminales 23 (+) y 35 (-).
-                                                                                                                 # 02h--> y[1]: P-ACID-1095 M. Terminales 22 (+) y 34 (-).
-                                                                                                                 # 03h--> y[2]: ÁCIDO NÍTRICO. Termiales 21 (+) y 33 (-).
+        return
+
+    def create_registers(self):
 
         return
+        
     
-    def update_register(self, )
