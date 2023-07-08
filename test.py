@@ -14,6 +14,7 @@ itc_650.serial.baudrate = 115200
 itc_650.serial.bytesize = 8
 itc_650.serial.parity = minimalmodbus.serial.PARITY_NONE
 itc_650.serial.timeout = 0.05 # I'm not sure if i'ts necessary.
+
 fig, axes = plt.subplots(1, 3)
 
 # GRAPH FOR P-ACID-1095
