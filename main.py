@@ -1,25 +1,31 @@
 from fastapi import FastAPI
 from config.database import engine, Base, Session
-from models.register import Register
+from models.register import Register as RegisterModel
 from middlewares.error_handler import ErrorHandler
 from services.register import RegisterService
+from models.controller import Controller as ControllerModel
+from routers.controller import controller_router
+from routers.register import register_router
+from pyModbusTCP import ModbusClient
 
 app = FastAPI()
 app.title = "Lectura de Sensores de Nivel"
 app.version = "0.0.1"
 
+app.include_router(controller_router)
+app.include_router(register_router)
+
 app.add_middleware(ErrorHandler)
 
 Base.metadata.create_all(bind=engine)
 
-
-
-@app.get("/")
+@app.get("/", tags=['main'])
 async def run():
 
     db = Session()
     # Conexión con ITC-650
-    itc_650 = ModbusClient(host='10.10.100.124', port=8899, auto_open=True)
+    itc_650_db = db.query(ControllerModel).filter(ControllerModel.id==1).first()
+    itc_650 = ModbusClient(host=itc_650_db.host, port=itc_650_db.port, auto_open=True)
 
     tanks = ['P-ACID-1095', 'P-ACID-1095 M', 'ÁCIDO NÍTRICO', 'ÁCIDO CLORHÍDRICO'] # List of tanks connected to ITC-650
 
@@ -32,10 +38,8 @@ async def run():
     except IOError as e:
 
         HTMLResponse(f"Error de comunicación: {e}")
-
-        continue
     
-    RegisterService(db).update_registers(y)
+    RegisterService(db).update_registers(meassures)
     
     response = '<h2>TANQUES LOMA LINDA</h2>'
 

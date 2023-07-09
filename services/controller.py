@@ -1,4 +1,3 @@
-from pyModbusTCP import ModbusClient
 from models.controller import Controller as ControllerModel
 from schemas.controller import Controller
 

@@ -47,6 +47,18 @@ class RegisterService():
 
         return
 
+    def modify_register(self, id: int, register: Register) -> None:
+        result = self.db.query(RegisterModel).filter(RegisterModel.id == id).first()
+
+        result.id = register.id
+        result.register_name = register.register_name
+        result.meassure = register.meassure
+        result.meassure_unit = register.meassure_unit
+
+        self.db.commit()
+
+        return
+
 
 
 

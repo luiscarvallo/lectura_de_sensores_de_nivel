@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Optional
+from pydantic import BaseModel
 
 class Controller(BaseModel):
     id: int
@@ -10,6 +10,6 @@ class Controller(BaseModel):
             "example": {
                 "id": 1,
                 "host": "192.168.0.200",
-                "port": "8899",
+                "port": 8899,
             }
         }
