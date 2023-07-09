@@ -2,8 +2,7 @@ from pydantic import BaseModel, Optional
 import datetime
 
 class Register(BaseModel):
-    id : Optional[int] = None
-    controller_address : int
+    id : int
     register_name : str
     meassure : float
     meassure_unit : str
@@ -12,9 +11,8 @@ class Register(BaseModel):
         schema_extra = {
             "example": {
                 "id": 1,
-                "controller_address": 1,
                 "register_name": "ÁCIDO NÍTRICO",
                 "meassure": 14.55,
-                "meassure_unit": "M3",
+                "meassure_unit": "m3",
             }
         }

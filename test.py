@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 import matplotlib.pyplot as plt # Documentation: https://matplotlib.org/stable/index.html
 from minimalmodbus import Instrument # Documentation: https://minimalmodbus.readthedocs.io/en/stable/readme.html
 from time import sleep # Documentation: https://docs.python.org/es/3/library/time.html
