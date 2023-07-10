@@ -1,23 +1,15 @@
-from pydantic import BaseModel, Optional
+from pydantic import BaseModel
 
 class Controller(BaseModel):
-    slaveaddress : Optional[int] = None
-    name : str
-    port : int
-    mode : str
-    baudrate : int
-    bytesize : int
-    parity : str
+    id: int
+    host: str
+    port: int
 
     class Config:
         schema_extra = {
             "example": {
-                "slaveaddress": 1,
-                "name": "itc_650",
-                "port": "COM5",
-                "mode": "rtu",
-                "baudrate": 115200,
-                "bytesize": 8,
-                "parity" : "None"
+                "id": 1,
+                "host": "192.168.0.200",
+                "port": 8899,
             }
         }

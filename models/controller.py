@@ -5,10 +5,6 @@ class Controller(Base):
 
     __tablename__ = "controllers"
 
-    slaveaddress = Column(Integer, primary_key = True)
-    name = Column(String)
+    id = Column(Integer, primary_key = True)
+    host = Column(String)
     port = Column(Integer)
-    mode = Column(String)
-    baudrate = Column(Integer)
-    bytesize = Column(Integer)
-    parity = Column(String)
