@@ -1,20 +1,21 @@
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 import matplotlib.pyplot as plt # Documentation: https://matplotlib.org/stable/index.html
-from minimalmodbus import Instrument # Documentation: https://minimalmodbus.readthedocs.io/en/stable/readme.html
+import minimalmodbus # Documentation: https://minimalmodbus.readthedocs.io/en/stable/readme.html
 from time import sleep # Documentation: https://docs.python.org/es/3/library/time.html
 
 app = FastAPI()
 
-x = ['P-ACID-1095', 'P-ACID-1095 M', 'ÁCIDO NÍTRICO'] # List of tanks connected to ITC-650
+x = ['P-ACID-1095', 'P-ACID-1095 M', 'ÁCIDO NÍTRICO', 'ÁCIDO CLORHÍDRICO'] # List of tanks connected to ITC-650
 
 # Set up the serial port. Terminales 10 (GND), 11 (data -), 12 (data +).
 # Manual ITC-650: Z:\Sistema de Gestión de Calidad\SGC\Coordinación del SGC\Documentos externos\Información técnica\Manual ITC-650
-itc_650 = Instrument('COM5', slaveaddress=1, mode='rtu') # Device port, slave address and mode
+itc_650 = minimalmodbus.Instrument('COM5', slaveaddress=1, mode='rtu') # Device port, slave address and mode
 itc_650.serial.baudrate = 115200
 itc_650.serial.bytesize = 8
 itc_650.serial.parity = minimalmodbus.serial.PARITY_NONE
 itc_650.serial.timeout = 0.05 # I'm not sure if i'ts necessary.
-fig, axes = plt.subplots(1, 3)
+fig, axes = plt.subplots(1, 4)
 
 # GRAPH FOR P-ACID-1095
 # D = 2.33 m
@@ -40,6 +41,14 @@ axes[1].set_ylabel('m3')
 axes[2].set_ylim(0, 36.00)
 axes[2].set_ylabel('m3')
 
+# GRAPH FOR ÁCIDO CLORHÍDRICO
+# D = 2.91 m
+# hmax = 4.57 m
+# V = 30.00 m3
+# Densidad = 1.15 g/mL (HS-CAL-025: Z:\Hojas de Seguridad (Actualizadas y Normalizadas))
+axes[3].set_ylim(0, 30.00)
+axes[3].set_ylabel('m3')
+
 @app.get("/")
 async def graphics():
 
@@ -48,10 +57,11 @@ async def graphics():
     while True:
 
         try:
-            y = [register/100 for register in itc_650.read_registers(registeraddress=1, number_of_registers=len(x))] # Lectura de los registros, iniciando desde el 01h hasta la longitud de la lista x, agregando los puntos decimales.
-                                                                                    # 01h--> y[0]: P-ACID-1095. Terminales 23 (+) y 35 (-).
-                                                                                    # 02h--> y[1]: P-ACID-1095 M. Terminales 22 (+) y 34 (-).
-                                                                                    # 03h--> y[2]: ÁCIDO NÍTRICO. Termiales 21 (+) y 33 (-).
+            # Lectura de los registros, iniciando desde el 01h hasta la longitud de la lista x, agregando los puntos decimales.
+            # 01h--> y[0]: P-ACID-1095. Terminales 23 (+) y 35 (-).
+            # 02h--> y[1]: P-ACID-1095 M. Terminales 22 (+) y 34 (-).
+            # 03h--> y[2]: ÁCIDO NÍTRICO. Termiales 21 (+) y 33 (-).
+            y = [register/100 for register in itc_650.read_registers(registeraddress=1, number_of_registers=len(x))] 
             
             for i in range(len(x)):
                 axes[i].clear()
@@ -74,16 +84,22 @@ async def graphics():
             axes[2].set_ylabel('m3')
             axes[2].legend()
 
+            # GRAPH FOR ÁCIDO CLORHÍDRICO
+            axes[3].bar(x[3], y[3], color='yellow',label=str(y[3]) + ' m3')
+            axes[3].set_ylim(0, 30.00)
+            axes[3].set_ylabel('m3')
+            axes[3].legend()
+
             fig.canvas.draw()
             fig.canvas.flush_events()
 
-            time.sleep(0.5)
+            sleep(0.5)
 
         except IOError as e:
 
             print(f"Error de comunicación: {e}")
             print("Intentando de nuevo en 10 segundos...")
-            time.sleep(10)
+            sleep(10)
             continue
             
         except KeyboardInterrupt: # Press Ctrl + C
@@ -91,11 +107,4 @@ async def graphics():
             print("Interrupción de teclado detectada. Saliendo...")
             break
 
-    return HTMLResponse('<h1>First test</h1>')
-
-
-
-
-
-
-
+        return HTMLResponse('<h1>First test</h1>')
