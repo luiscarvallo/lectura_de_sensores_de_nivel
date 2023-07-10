@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from config.database import engine, Base, Session
-from models.register import Register as RegisterModel
 from middlewares.error_handler import ErrorHandler
 from services.register import RegisterService
 from models.controller import Controller as ControllerModel

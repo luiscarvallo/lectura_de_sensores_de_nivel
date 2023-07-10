@@ -3,7 +3,7 @@ from pyModbusTCP.client import ModbusClient
 from fastapi.responses import HTMLResponse
 
 # Conexión con ITC-650
-itc_650 = ModbusClient(host='10.10.100.124', port=8899, auto_open=True)
+itc_650 = ModbusClient(host='192.168.0.166', port=8899, auto_open=True)
 
 app = FastAPI()
 

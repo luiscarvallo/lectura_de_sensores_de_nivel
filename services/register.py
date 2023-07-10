@@ -35,7 +35,8 @@ class RegisterService():
     def update_registers(self, meassures: list) -> None:
         
         for id in range(len(meassures)):
-            update_register(id=id, meassure= meassures[id])
+
+            self.update_register(id=id, meassure= meassures[id])
 
         return
 
