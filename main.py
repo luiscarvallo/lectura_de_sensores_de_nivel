@@ -7,6 +7,9 @@ from models.controller import Controller as ControllerModel
 from routers.controller import controller_router
 from routers.register import register_router
 from pyModbusTCP.client import ModbusClient
+import matplotlib.pyplot as plt
+import io
+import base64
 
 # Inicialización de la app
 app = FastAPI()
@@ -48,10 +51,55 @@ def run() -> HTMLResponse:
         HTMLResponse(f"Error de comunicación: {e}")
     
     RegisterService(db).update_registers(meassures)
-    
-    response = '<h2>TANQUES LOMA LINDA</h2>'
+
+    fig, axes = plt.subplots(1, 4)
 
     for i in range(len(tanks)):
-        response = response + f'<p>{tanks[i]}: {meassures[i]} m3</p>'
+        axes[i].clear()
+
+    # GRAPH FOR P-ACID-1095
+    # D = 2.33 m
+    # hmax = 3.66 m
+    # V = 15.50 m3
+    # Densidad = 1.2 g/mL (BT-CAL-037: Z:\Boletines Técnicos (Actualizados y Normalizados))
+    axes[0].bar(tanks[0], meassures[0], color='orange', label=str(meassures[0]) + ' m3')
+    axes[0].set_ylim(0, 15.50)
+    axes[0].set_ylabel('m3')
+    axes[0].legend()
+
+    # GRAPH FOR P-ACID-1095 M
+    # D = 1.55 m
+    # hmax = 3.66 m
+    # V = 6.00 m3
+    # Densidad = 1.2 g/mL (BT-CAL-037: Z:\Boletines Técnicos (Actualizados y Normalizados))
+    axes[1].bar(tanks[1], meassures[1], color='orange',label=str(meassures[1]) + ' m3')
+    axes[1].set_ylim(0, 6.00)
+    axes[1].legend()
+
+    # GRAPH FOR ÁCIDO NÍTRICO
+    # D = 3.09 m
+    # hmax = 4.88 m
+    # V = 36.00 m3
+    # Densidad = 1.32 g/mL (HS-CAL-050: Z:\Hojas de Seguridad (Actualizadas y Normalizadas))
+    axes[2].bar(tanks[2], meassures[2], color='orange',label=str(meassures[2]) + ' m3')
+    axes[2].set_ylim(0, 36.00)
+    axes[2].legend()
+
+    # GRAPH FOR ÁCIDO CLORHÍDRICO
+    # D = 2.91 m
+    # hmax = 4.57 m
+    # V = 30.00 m3
+    # Densidad = 1.15 g/mL (HS-CAL-025: Z:\Hojas de Seguridad (Actualizadas y Normalizadas))
+    axes[3].bar(tanks[3], meassures[3], color='yellow',label=str(meassures[3]) + ' m3')
+    axes[3].set_ylim(0, 30.00)
+    axes[3].set_ylabel('m3')
+    axes[3].legend()
+
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+
+    plot_data = base64.b64encode(buffer.getvalue()).decode()
+    response = f'<center><h2>TANQUES LOMA LINDA</h2><img src="data:image/png;base64,{plot_data}"/></center>'
 
     return HTMLResponse(response)
