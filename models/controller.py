@@ -1,5 +1,5 @@
 from config.database import Base
-from sqlalchemy import Column, String, Integer, DateTime, Float
+from sqlalchemy import Column, String, Integer
 
 class Controller(Base):
 
