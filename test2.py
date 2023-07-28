@@ -6,7 +6,7 @@ import base64
 
 app = FastAPI()
 x = ['P-ACID-1095', 'P-ACID-1095 M', 'ÁCIDO NÍTRICO'] # List of tanks connected to ITC-650
-y = [5.67, 5.32, 10.56, 16.47]
+y = [5.67, 5.32, 10.56, 16.47, 14.72]
 
 fig, axes = plt.subplots(1, 3)
 
