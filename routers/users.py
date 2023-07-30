@@ -39,5 +39,3 @@ def delete_user(username: str) -> dict:
     UserService(db).delete_user(username=username)
 
     return JSONResponse(content={'message' : 'Se eliminó el usuario'}, status_code=200)
-
-
