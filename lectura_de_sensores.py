@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt # Documentation: https://matplotlib.org/stable/index.html
-import minimalmodbus # Documentation: https://minimalmodbus.readthedocs.io/en/stable/readme.html
-import time # Documentation: https://docs.python.org/es/3/library/time.html
+from minimalmodbus import Instrument # Documentation: https://minimalmodbus.readthedocs.io/en/stable/readme.html
+from time import sleep # Documentation: https://docs.python.org/es/3/library/time.html
 
 x = ['P-ACID-1095', 'P-ACID-1095 M', 'ÁCIDO NÍTRICO', 'ÁCIDO CLORHÍDRICO'] # List of tanks connected to ITC-650
 
 # Set up the serial port. Terminales 10 (GND), 11 (data -), 12 (data +).
 # Manual ITC-650: Z:\Sistema de Gestión de Calidad\SGC\Coordinación del SGC\Documentos externos\Información técnica\Manual ITC-650
-itc_650 = minimalmodbus.Instrument('COM5', slaveaddress=1, mode='rtu') # Device port, slave address and mode
+itc_650 = Instrument('COM5', slaveaddress=1, mode='rtu') # Device port, slave address and mode
 itc_650.serial.baudrate = 115200
 itc_650.serial.bytesize = 8
 itc_650.serial.parity = minimalmodbus.serial.PARITY_NONE
