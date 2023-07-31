@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, status
-from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 from schemas.user import User
 from services.user import UserService
 from config.database import Session
 from fastapi.security import OAuth2PasswordRequestForm
+
 
 users_router = APIRouter()
 

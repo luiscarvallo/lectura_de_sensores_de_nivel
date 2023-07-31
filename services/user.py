@@ -1,15 +1,19 @@
 from schemas.user import User
+from schemas.token import TokenData
 from models.user import User as UserModel
 from typing import Annotated
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, status
 from fastapi.exceptions import HTTPException
 from utils.pw_manager import verify_password, get_password_hash
-from datetime import datetime, timedelta
+from datetime import timedelta
 from utils.jwt_manager import create_access_token
+from jose import JWTError, jwt
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
+SECRET_KEY = "07f271739b7c58bac3ae1f410c2832ea7c743e17876fba9c907ea0200f77adef"
+ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 class UserService():
@@ -56,7 +60,9 @@ class UserService():
             token_data = TokenData(username=username)
         except JWTError:
             raise credentials_exception
+        
         user = self.get_user(username=token_data.username)
+
         if user is None:
             raise credentials_exception
         return user
