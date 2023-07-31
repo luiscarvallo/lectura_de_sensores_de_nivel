@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from config.database import engine, Base, Session
 from middlewares.error_handler import ErrorHandler
@@ -15,6 +15,8 @@ import base64
 from typing import Annotated
 from schemas.user import User
 from fastapi import Depends, status
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 
 # Inicialización de la app
 app = FastAPI()
@@ -31,6 +33,24 @@ app.add_middleware(ErrorHandler)
 
 # Base de datos
 Base.metadata.create_all(bind=engine)
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+templates = Jinja2Templates(directory="templates")
+
+@app.get("/", response_class=HTMLResponse)
+def home(request: Request):
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+        "message": "Hola gente, vamos a usar html con FastAPI"
+    })
+
+@app.get("/create", response_class=HTMLResponse)
+def create(request: Request):
+    return templates.TemplateResponse("create_user.html", {
+        "request": request,
+        "message": "Hola gente, vamos a usar html con FastAPI"
+    })
 
 # Método get que realiza la lectura de los registros, lo envía a la base de datos y retorna una respuesta HTMLResponse con las lecturas.
 @app.get("/graphics", tags=['main'])

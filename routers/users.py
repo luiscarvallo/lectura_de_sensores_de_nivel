@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Form
 from fastapi.responses import JSONResponse
 from schemas.user import User
 from services.user import UserService
@@ -17,10 +17,10 @@ def login(form: OAuth2PasswordRequestForm = Depends()):
     return JSONResponse(status_code=200, content={"access_token" : access_token, "token_type" : "bearer"})
 
 @users_router.post('/create_user',tags=['users'], response_model=dict, status_code=200)
-def create_user(email: str, password:str):
+def create_user(email: str = Form(), password: str = Form(), confirm_password: str = Form()):
     db = Session()
-
-    UserService(db).create_user(username=email, password=password)
+    
+    UserService(db).create_user(username=email, password=password, confirm_password=confirm_password)
 
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={"message" : "El usuario fue creado con éxito"})
 

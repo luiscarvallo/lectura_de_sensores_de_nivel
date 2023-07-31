@@ -32,7 +32,11 @@ class UserService():
             return False
         return user
 
-    def create_user(self, username: str, password: str) -> None:
+    def create_user(self, username: str, password: str, confirm_password: str) -> None:
+
+        if password != confirm_password:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Las contraseñas no coinciden")
+        
         user = self.get_user(username=username)
 
         if user:
