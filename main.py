@@ -3,13 +3,18 @@ from fastapi.responses import HTMLResponse
 from config.database import engine, Base, Session
 from middlewares.error_handler import ErrorHandler
 from services.register import RegisterService
+from services.user import UserService
 from models.controller import Controller as ControllerModel
 from routers.controller import controller_router
 from routers.register import register_router
+from routers.users import users_router
 from pyModbusTCP.client import ModbusClient
 import matplotlib.pyplot as plt
 import io
 import base64
+from typing import Annotated
+from schemas.user import User
+from fastapi import Depends, status
 
 # Inicialización de la app
 app = FastAPI()
@@ -19,6 +24,7 @@ app.version = "0.0.1"
 # Routers
 app.include_router(controller_router)
 app.include_router(register_router)
+app.include_router(users_router)
 
 # Middlewares
 app.add_middleware(ErrorHandler)
@@ -27,8 +33,8 @@ app.add_middleware(ErrorHandler)
 Base.metadata.create_all(bind=engine)
 
 # Método get que realiza la lectura de los registros, lo envía a la base de datos y retorna una respuesta HTMLResponse con las lecturas.
-@app.get("/", tags=['main'])
-def run() -> HTMLResponse:
+@app.get("/graphics", tags=['main'])
+def run(current_user: Annotated[User, Depends(UserService.get_current_active_user)]) -> HTMLResponse:
 
     db = Session()
 

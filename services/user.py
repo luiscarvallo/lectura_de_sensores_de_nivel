@@ -1,12 +1,16 @@
 from schemas.user import User
 from models.user import User as UserModel
-from jwt_manager import create_token
+from typing import Annotated
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi import Depends
+from fastapi import Depends, status
 from fastapi.exceptions import HTTPException
-from utils.pw_manager import verify_password
+from utils.pw_manager import verify_password, get_password_hash
+from datetime import datetime, timedelta
+from utils.jwt_manager import create_access_token
 
-oauth2 = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 class UserService():
     def __init__(self, db) -> None:
@@ -24,28 +28,82 @@ class UserService():
             return False
         return user
 
-    def login(self, form: OAuth2PasswordRequestForm = Depends()):
-        result = self.search_user(form.username)
-        
-        if not result:
-            raise HTTPException(status_code=400, detail="El email no es correcto")
+    def create_user(self, username: str, password: str) -> None:
+        user = self.get_user(username=username)
 
-        if not username.password == result.password:
-            raise HTTPException(status_code=400, detail="La contraseña no es correcta")
-        
-        token: str = create_token(user.dict())
-        
-        return token
-            
+        if user:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="El email ya ha sido registrado")
 
+        hashed_password = get_password_hash(password=password)
+        new_user = UserModel(email=username, password=hashed_password, disabled=False)
 
-    def create_user(self, user: User) -> None:
-        new_user = UserModel(**user.dict())
-
-        self.db.add(new_register)
+        self.db.add(new_user)
         self.db.commit()
 
         return
 
-    async def current_user(token: str = Depends(oauth2)):
-        token
+    def get_current_user(self, token: Annotated[str, Depends(oauth2_scheme)]):
+        credentials_exception = HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+            )
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            username: str = payload.get("sub")
+            if username is None:
+                raise credentials_exception
+            token_data = TokenData(username=username)
+        except JWTError:
+            raise credentials_exception
+        user = self.get_user(username=token_data.username)
+        if user is None:
+            raise credentials_exception
+        return user
+
+    def get_current_active_user(self, 
+        current_user: Annotated[User, Depends(get_current_user)]
+    ):
+        if current_user.disabled:
+            raise HTTPException(status_code=400, detail="Inactive user")
+        return current_user
+
+    def login_for_access_token(self, form_data):
+        user = self.authenticate_user(form_data.username, form_data.password)
+
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect username or password",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={"sub": user.email}, expires_delta=access_token_expires
+        )
+        return access_token
+
+    def read_users_me(self, 
+        current_user: Annotated[User, Depends(get_current_active_user)]
+    ):
+        return current_user
+
+    def modify_user(self, username: str, user: User):
+        result = self.get_user(username=username)
+
+        result.email = user.email
+        result.password = get_password_hash(password=user.password)
+        result.disabled = user.disabled
+
+        self.db.commit()
+        
+        return
+
+    def delete_user(self, username: str):
+        result = self.get_user(username=username)
+
+        self.db.delete(result)
+        self.db.commit()
+
+        return
+
