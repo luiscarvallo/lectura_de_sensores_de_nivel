@@ -5,7 +5,6 @@ from services.user import UserService
 from config.database import Session
 from fastapi.security import OAuth2PasswordRequestForm
 
-
 users_router = APIRouter()
 
 @users_router.post('/login', tags=['users'], response_model=dict, status_code=200)

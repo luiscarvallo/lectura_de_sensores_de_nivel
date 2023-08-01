@@ -3,7 +3,7 @@ from schemas.token import TokenData
 from models.user import User as UserModel
 from typing import Annotated
 from fastapi.security import OAuth2PasswordBearer
-from fastapi import Depends, status
+from fastapi import Depends, status, Form
 from fastapi.exceptions import HTTPException
 from utils.pw_manager import verify_password, get_password_hash
 from datetime import timedelta
