@@ -17,6 +17,7 @@ from schemas.user import User
 from fastapi import Depends, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from middlewares.jwt_bearer import MyBearer
 
 # Inicialización de la app
 app = FastAPI()
@@ -40,7 +41,7 @@ templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
-    return templates.TemplateResponse("index.html", {
+    return templates.TemplateResponse("admin.html", {
         "request": request,
         "message": "Hola gente, vamos a usar html con FastAPI"
     })
@@ -53,8 +54,8 @@ def create(request: Request):
     })
 
 # Método get que realiza la lectura de los registros, lo envía a la base de datos y retorna una respuesta HTMLResponse con las lecturas.
-@app.get("/graphics", tags=['main'])
-def run(current_user: Annotated[User, Depends(UserService.get_current_active_user)]) -> HTMLResponse:
+@app.post("/graphics", tags=['main'], dependencies=[Depends(MyBearer())])
+def run() -> HTMLResponse:
 
     db = Session()
 
