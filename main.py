@@ -41,7 +41,7 @@ templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
-    return templates.TemplateResponse("admin.html", {
+    return templates.TemplateResponse("index2.html", {
         "request": request,
         "message": "Hola gente, vamos a usar html con FastAPI"
     })
@@ -52,6 +52,10 @@ def create(request: Request):
         "request": request,
         "message": "Hola gente, vamos a usar html con FastAPI"
     })
+
+@app.get("/prueba", tags=['main'], dependencies=[Depends(MyBearer())])
+def prueba() :
+    return {"message": "Lo lograste"}
 
 # Método get que realiza la lectura de los registros, lo envía a la base de datos y retorna una respuesta HTMLResponse con las lecturas.
 @app.post("/graphics", tags=['main'], dependencies=[Depends(MyBearer())])
