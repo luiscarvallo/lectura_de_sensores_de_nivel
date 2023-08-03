@@ -41,7 +41,14 @@ templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
-    return templates.TemplateResponse("index2.html", {
+    return templates.TemplateResponse("home.html", {
+        "request": request,
+        "message": "Hola gente, vamos a usar html con FastAPI"
+    })
+
+@app.get("/view1", response_class=HTMLResponse, dependencies=[Depends(MyBearer())])
+def home(request: Request):
+    return templates.TemplateResponse("view1.html", {
         "request": request,
         "message": "Hola gente, vamos a usar html con FastAPI"
     })
@@ -53,9 +60,24 @@ def create(request: Request):
         "message": "Hola gente, vamos a usar html con FastAPI"
     })
 
-@app.get("/prueba", tags=['main'], dependencies=[Depends(MyBearer())])
+@app.get("/prueba2", tags=['main'], response_class=HTMLResponse, dependencies=[Depends(MyBearer())])
 def prueba() :
-    return {"message": "Lo lograste"}
+    return """
+    <html>
+      <head>
+        <title>Página protegida</title>
+      </head>
+      <body>
+        <h1>Contenido protegido</h1>
+        <p>Esta es una página protegida y solo puede ser vista por usuarios autenticados.</p>
+      </body>
+    </html>
+    """
+
+@app.get("/prueba", response_class=HTMLResponse, dependencies=[Depends(MyBearer())])
+def prueba(request: Request):
+    response = "Lo lograste"  # Aquí obtienes la respuesta protegida que deseas mostrar
+    return templates.TemplateResponse("test_template.html", {"request": request, "content": response})
 
 # Método get que realiza la lectura de los registros, lo envía a la base de datos y retorna una respuesta HTMLResponse con las lecturas.
 @app.post("/graphics", tags=['main'], dependencies=[Depends(MyBearer())])

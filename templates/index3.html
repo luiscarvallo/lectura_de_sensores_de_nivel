@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tanques Loma Linda</title>
+    <link rel="stylesheet" href="static/styles.css">
+  </head>
+  <body>
+
+    <div class="login-box">
+      <img src="static/logo.png" class="avatar" alt="Avatar Image">
+      <h1>Iniciar Sesión</h1>
+      <form id="login-form">
+        <!-- Resto de los campos del formulario -->
+        <!-- USERNAME INPUT -->
+        <label for="username">Email</label>
+        <input id="username" name="username" type="text" placeholder="usuario@induchem.com" required>
+        <!-- PASSWORD INPUT -->
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" placeholder="Password" required>
+        <input type="submit" value="Log In">
+      </form>
+
+      <div id="message-container" style="display: none;">
+        <!-- Aquí se insertará la respuesta HTML -->
+      </div>
+
+      <script>
+        function login(event) {
+          event.preventDefault();
+          const form = new FormData();
+          form.append("username", document.getElementById("username").value);
+          form.append("password", document.getElementById("password").value);
+
+          fetch("/login", {
+            method: "POST",
+            body: form,
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Credenciales inválidas. Vuelva a intentarlo.");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              localStorage.setItem("token", data.access_token);
+              fetchProtectedHTML();
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
+
+        function fetchProtectedHTML() {
+          const token = localStorage.getItem("token");
+          fetch("/prueba", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Acceso denegado. No estás autenticado.");
+              }
+              return response.text();
+            })
+            .then((html) => {
+              const messageContainer = document.getElementById("message-container");
+              messageContainer.innerHTML = html;
+              messageContainer.style.display = "block";
+
+              // Redireccionar a la ruta protegida
+              window.location.href = "templates\test_template.html";
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+          const loginForm = document.getElementById("login-form");
+          loginForm.addEventListener("submit", function (event) {
+            login(event);
+          });
+        });
+      </script>
+    </div>
+
+  </body>
+</html>
