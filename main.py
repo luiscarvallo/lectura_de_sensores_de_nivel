@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
 from config.database import engine, Base, Session
 from middlewares.error_handler import ErrorHandler
 from services.register import RegisterService
@@ -18,6 +18,7 @@ from fastapi import Depends, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from middlewares.jwt_bearer import MyBearer
+from numpy import random
 
 # Inicialización de la app
 app = FastAPI()
@@ -46,12 +47,46 @@ def home(request: Request):
         "message": "Hola gente, vamos a usar html con FastAPI"
     })
 
-@app.get("/view1", response_class=HTMLResponse, dependencies=[Depends(MyBearer())])
-def home(request: Request):
+@app.get("/view1", response_class=HTMLResponse)
+def view1(request: Request):
     return templates.TemplateResponse("view1.html", {
         "request": request,
         "message": "Hola gente, vamos a usar html con FastAPI"
     })
+
+@app.get("/image", dependencies=[Depends(MyBearer())])
+def image():
+    fig, axes = plt.subplots(1, 4)
+
+    x = ['P-ACID-1095', 'P-ACID-1095 M', 'ÁCIDO NÍTRICO', 'ÁCIDO CLORHÍDRICO']
+    y = [5.00, 5.99, 12.62, 10.50]
+    
+    # GRAPH FOR P-ACID-1095
+    axes[0].bar(x[0], y[0], color='orange', label=str(y[0]) + ' m3')
+    axes[0].set_ylim(0, 15.50)
+    axes[0].set_ylabel('m3')
+    axes[0].legend()
+
+    # GRAPH FOR P-ACID-1095 M
+    axes[1].bar(x[1], y[1], color='orange',label=str(y[1]) + ' m3')
+    axes[1].set_ylim(0, 6.00)
+    axes[1].legend()
+
+    # GRAPH FOR ÁCIDO NÍTRICO
+    axes[2].bar(x[2], y[2], color='orange',label=str(y[2]) + ' m3')
+    axes[2].set_ylim(0, 36.00)
+    axes[2].legend()
+
+    # GRAPH FOR ÁCIDO CLORHÍDRICO
+    axes[3].bar(x[3], y[3], color='yellow',label=str(y[3]) + ' m3')
+    axes[3].set_ylim(0, 30.00)
+    axes[3].legend()
+
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+
+    return StreamingResponse(io.BytesIO(buffer.getvalue()), media_type="image/png")
 
 @app.get("/create", response_class=HTMLResponse)
 def create(request: Request):

@@ -40,7 +40,8 @@
             })
             .then((data) => {
               localStorage.setItem("token", data.access_token);
-              fetchProtectedHTML();
+              //fetchProtectedHTML();
+              window.location.href = "/view1"
             })
             .catch((error) => {
               console.error(error);
@@ -59,7 +60,7 @@
               if (!response.ok) {
                 throw new Error("Acceso denegado. No estás autenticado.");
               }
-              return response.text();
+              return //response.text();
         })
         }
         document.addEventListener("DOMContentLoaded", function () {
