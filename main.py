@@ -42,7 +42,7 @@ def run() -> HTMLResponse:
     itc_650_db = db.query(ControllerModel).filter(ControllerModel.id==1).first()
     itc_650 = ModbusClient(host=itc_650_db.host, port=itc_650_db.port, auto_open=True)
 
-    tanks = ['P-ACID-1095', 'P-ACID-1095 M', 'ÁCIDO NÍTRICO', 'ÁCIDO CLORHÍDRICO'] # List of tanks connected to ITC-650
+    tanks = ['P-ACID-1095', 'MEZCLADOR 1095', 'ÁCIDO NÍTRICO', 'ÁCIDO CLORHÍDRICO'] # List of tanks connected to ITC-650
 
     try:
         # Lectura de los registros, iniciando desde el 01h hasta la longitud de la lista tanks, agregando los puntos decimales.
@@ -98,7 +98,6 @@ def run() -> HTMLResponse:
     # Densidad = 1.15 g/mL (HS-CAL-025: Z:\Hojas de Seguridad (Actualizadas y Normalizadas))
     axes[3].bar(tanks[3], meassures[3], color='yellow',label=str(meassures[3]) + ' m3')
     axes[3].set_ylim(0, 30.00)
-    axes[3].set_ylabel('m3')
     axes[3].legend()
 
     buffer = io.BytesIO()
