@@ -10,7 +10,10 @@
             <img src="static/logo.png" class="avatar" alt="Avatar Image">
             <h1>Tanques Loma Linda</h1>
             <center><img alt="Image" id="graphic-image" height="450px" width="800px"></center>
-            <center><input type="submit" value="Recargar" onclick="fetchImage()"></center>
+            <center>
+                <input type="submit" value="Recargar" onclick="fetchImage()">
+                <input type="submit" value="Cerrar Sesión" onclick="closeSession()">
+            </center>
         </div>
 
         <script>
@@ -25,7 +28,9 @@
                 })
                 .then((response) => {
                     if (!response.ok) {
+                        window.location.href = "/";
                         throw new Error("Acceso denegado. No estás autenticado para ver la imagen.");
+                        
                     }
                     return response.blob();
                 })
@@ -42,11 +47,12 @@
                 });
             }
 
-            // Llamamos a la función para obtener la imagen al cargar la página
-            while(true){
-                fetchImage();
+            function closeSession(){
+                localStorage.setItem("token", "");
+                window.location.href = "/";
             }
-            
+            // Llamamos a la función para obtener la imagen al cargar la página
+                fetchImage();
         </script>
     </body>
 </html>

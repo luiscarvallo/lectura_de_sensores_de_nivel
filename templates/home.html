@@ -20,6 +20,9 @@
         <input id="password" name="password" type="password" placeholder="Password" required>
         <input type="submit" value="Log In">
       </form>
+      <div id="message-container" style="display: none;">
+
+      </div>
 
       <script>
         function login(event) {
@@ -34,13 +37,15 @@
           })
             .then((response) => {
               if (!response.ok) {
+                const messageContainer = document.getElementById("message-container");
+                messageContainer.innerText = "Usuario o clave inválidos"
+                messageContainer.style.display = "block";
                 throw new Error("Credenciales inválidas. Vuelva a intentarlo.");
               }
               return response.json();
             })
             .then((data) => {
               localStorage.setItem("token", data.access_token);
-              //fetchProtectedHTML();
               window.location.href = "/view1"
             })
             .catch((error) => {
@@ -48,21 +53,6 @@
             });
         }
 
-        function fetchProtectedHTML() {
-          const token = localStorage.getItem("token");
-          fetch("/view1", {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error("Acceso denegado. No estás autenticado.");
-              }
-              return //response.text();
-        })
-        }
         document.addEventListener("DOMContentLoaded", function () {
           const loginForm = document.getElementById("login-form");
           loginForm.addEventListener("submit", function (event) {

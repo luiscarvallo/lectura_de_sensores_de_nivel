@@ -38,3 +38,10 @@ def delete_user(username: str) -> dict:
     UserService(db).delete_user(username=username)
 
     return JSONResponse(content={'message' : 'Se eliminó el usuario'}, status_code=200)
+
+@users_router.post('/verify_admin', tags=['users'], response_model=dict, status_code=200)
+def verify_admin(token: str) -> dict:
+    db = Session()
+    response = str(UserService(db).verify_admin(token=token))
+
+    return JSONResponse(content={'admin' : response}, status_code=200)

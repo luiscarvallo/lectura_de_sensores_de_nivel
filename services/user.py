@@ -93,6 +93,10 @@ class UserService():
         )
         return access_token
 
+    def verify_admin(token: Annotated[str, Depends(oauth2_scheme)]):
+        current_user = self.get_current_user(token=token)
+        return current_user.admin
+
     def read_users_me(self, 
         current_user: Annotated[User, Depends(get_current_active_user)]
     ):
