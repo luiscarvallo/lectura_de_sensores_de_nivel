@@ -95,7 +95,10 @@ class UserService():
 
     def verify_admin(self, token: Annotated[str, Depends(oauth2_scheme)]):
         current_user = self.get_current_user(token=token)
-        return current_user.admin
+
+        if not current_user.admin:
+            raise HTTPException(status_code=400, detail="Inactive user")
+        return current_user
 
     def read_users_me(self, 
         current_user: Annotated[User, Depends(get_current_active_user)]
@@ -107,6 +110,8 @@ class UserService():
 
         result.email = user.email
         result.password = get_password_hash(password=user.password)
+        result.user_role = user.user_role
+        result.admin = user.admin
         result.disabled = user.disabled
 
         self.db.commit()

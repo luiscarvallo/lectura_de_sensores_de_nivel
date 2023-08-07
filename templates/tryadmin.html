@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <script>
+        // Función para verificar si el usuario es admin
+        function tryAdmin() {
+            const token = localStorage.getItem("token");
+
+            fetch("/admin", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    window.location.href = "/view1";
+                    throw new Error("El usuario no es admin");
+                    
+                }
+                return response.blob();
+            })
+            .then((blob) => {
+                // Crear una URL local para la imagen
+                const imageURL = URL.createObjectURL(blob);
+
+                // Mostrar la imagen en el elemento <img>
+                const graphicImage = document.getElementById("graphic-image");
+                graphicImage.src = imageURL;
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+        }
+
+        function closeSession(){
+            localStorage.setItem("token", "");
+            window.location.href = "/";
+        }
+        // Llamamos a la función para obtener la imagen al cargar la página
+        fetchImage();
+    </script>
+</html>

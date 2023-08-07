@@ -17,7 +17,7 @@ from schemas.user import User
 from fastapi import Depends, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from middlewares.jwt_bearer import MyBearer
+from middlewares.jwt_bearer import MyBearer, AdminBearer
 from numpy import random
 
 # Inicialización de la app
@@ -45,6 +45,13 @@ def home(request: Request):
     return templates.TemplateResponse("home.html", {
         "request": request,
         "message": "Hola gente, vamos a usar html con FastAPI"
+    })
+
+@app.get("/admin", response_class=HTMLResponse, dependencies=[Depends(AdminBearer())])
+def admin(request: Request):
+    return templates.TemplateResponse("admin.html", {
+        "request": request,
+        "message": "Vista de Admin"
     })
 
 @app.get("/view1", response_class=HTMLResponse)

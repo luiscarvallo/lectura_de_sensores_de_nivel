@@ -7,4 +7,6 @@ class User(Base):
 
     email = Column(String, primary_key = True)
     password = Column(String)
+    user_role = Column(String)
+    admin = Column(Boolean)
     disabled = Column(Boolean)
