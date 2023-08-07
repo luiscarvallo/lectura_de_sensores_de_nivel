@@ -46,6 +46,7 @@
             })
             .then((data) => {
               localStorage.setItem("token", data.access_token);
+              const token = localStorage.getItem("token")
               fetch("/admin", {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -57,7 +58,6 @@
                     }else{
                       window.location.href = "/admin_view";
                     }
-                    return response.blob();
             })
             .catch((error) => {
               console.error(error);

@@ -44,10 +44,14 @@ templates = Jinja2Templates(directory="templates")
 def home(request: Request):
     return templates.TemplateResponse("home.html", {
         "request": request,
-        "message": "Hola gente, vamos a usar html con FastAPI"
+        "message": "Vista home"
     })
 
 @app.get("/admin", response_class=HTMLResponse, dependencies=[Depends(AdminBearer())])
+def admin() -> dict:
+    return {"message" : "El usuario es admin"}
+
+@app.get("/admin_view", response_class=HTMLResponse)
 def admin(request: Request):
     return templates.TemplateResponse("admin.html", {
         "request": request,
