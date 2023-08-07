@@ -33,8 +33,8 @@ app.add_middleware(ErrorHandler)
 Base.metadata.create_all(bind=engine)
 
 # Método get que realiza la lectura de los registros, lo envía a la base de datos y retorna una respuesta HTMLResponse con las lecturas.
-@app.get("/graphics", tags=['main'])
-def run(current_user: Annotated[User, Depends(UserService.get_current_active_user)]) -> HTMLResponse:
+@app.get("/", tags=['main'])
+def run() -> HTMLResponse:
 
     db = Session()
 
