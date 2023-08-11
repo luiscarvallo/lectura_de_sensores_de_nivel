@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Tanques Loma Linda</title>
+        <link rel="stylesheet" href="static/graphic-styles.css">
+    </head>
+    <body>
+        <div class="graphic-box">
+            <img src="static/logo.png" class="avatar" alt="Avatar Image">
+            <h1>Tanques Loma Linda</h1>
+            <center><img alt="Image" id="graphic-image" height="450px" width="800px"></center>
+            <center>
+                <input type="submit" value="Recargar" onclick="fetchAdmin()">
+                <input type="submit" value="Cerrar Sesión" onclick="closeSession()">
+            </center>
+        </div>
+
+        <script>
+
+            function fetchAdmin() {
+                const token = localStorage.getItem("token");
+                fetch("/admin", {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    })
+                    .then((response) => {
+                        if (response.ok) {
+                            window.location.href = "/admin";
+                        } else {
+                            window.location.href = "/image";
+                        }
+                })
+            }
+            fetchAdmin();
+        </script>
+    </body>
+</html>

@@ -58,9 +58,9 @@ def admin(request: Request):
         "message": "Vista de Admin"
     })
 
-@app.get("/view1", response_class=HTMLResponse)
+@app.get("/view2", response_class=HTMLResponse)
 def view1(request: Request):
-    return templates.TemplateResponse("view1.html", {
+    return templates.TemplateResponse("view2.html", {
         "request": request,
         "message": "Hola gente, vamos a usar html con FastAPI"
     })

@@ -29,8 +29,7 @@
                 .then((response) => {
                     if (!response.ok) {
                         window.location.href = "/";
-                        throw new Error("Acceso denegado. No estás autenticado para ver la imagen.");
-                        
+                        throw new Error("Acceso denegado.");
                     }
                     return response.blob();
                 })

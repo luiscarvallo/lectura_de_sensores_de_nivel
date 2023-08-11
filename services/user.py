@@ -97,7 +97,7 @@ class UserService():
         current_user = self.get_current_user(token=token)
 
         if not current_user.admin:
-            raise HTTPException(status_code=400, detail="Inactive user")
+            raise HTTPException(status_code=400, detail="Not admin")
         return current_user
 
     def read_users_me(self, 

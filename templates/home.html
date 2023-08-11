@@ -47,23 +47,12 @@
             .then((data) => {
               localStorage.setItem("token", data.access_token);
               const token = localStorage.getItem("token")
-              fetch("/admin", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
-                .then((response) => {
-                    if (!response.ok) {
-                        window.location.href = "/view1";
-                    }else{
-                      window.location.href = "/admin_view";
-                    }
+              window.location.href = "/view2";
             })
             .catch((error) => {
               console.error(error);
             });
-        })
-      }
+        }
         document.addEventListener("DOMContentLoaded", function () {
           const loginForm = document.getElementById("login-form");
           loginForm.addEventListener("submit", function (event) {
