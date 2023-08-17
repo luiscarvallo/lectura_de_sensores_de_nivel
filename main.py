@@ -88,8 +88,8 @@ def run() -> HTMLResponse:
     # hmax = 4.88 m
     # V = 36.00 m3
     # Densidad = 1.32 g/mL (HS-CAL-050: Z:\Hojas de Seguridad (Actualizadas y Normalizadas))
-    axes[1, 0].bar(tanks[2], round(meassures[2] * 1293, 2), color='orange',label=str(round(meassures[2] * 1293, 2)) + ' kg')
-    axes[1, 0].set_ylim(0, 36.00 * 1293)
+    axes[1, 0].bar(tanks[2], round(meassures[2] * 1325, 2), color='orange',label=str(round(meassures[2] * 1325, 2)) + ' kg')
+    axes[1, 0].set_ylim(0, 36.00 * 1325)
     axes[1, 0].legend()
 
     # GRAPH FOR ÁCIDO CLORHÍDRICO
