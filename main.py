@@ -42,7 +42,7 @@ def run() -> HTMLResponse:
     itc_650_db = db.query(ControllerModel).filter(ControllerModel.id==1).first()
     itc_650 = ModbusClient(host=itc_650_db.host, port=itc_650_db.port, auto_open=True)
 
-    tanks = ['NÍTRICO 53%', 'P-ACID-1095', 'NÍTRICO 48%', 'ÁCIDO CLORHÍDRICO'] # List of tanks connected to ITC-650
+    tanks = ['NÍTRICO 53% (Tanque P-ACID)', 'P-ACID-1095', 'NÍTRICO 53% (Tanque Nítrico)', 'ÁCIDO CLORHÍDRICO'] # List of tanks connected to ITC-650
 
     try:
         # Lectura de los registros, iniciando desde el 01h hasta la longitud de la lista tanks, agregando los puntos decimales.
@@ -54,7 +54,7 @@ def run() -> HTMLResponse:
 
     except IOError as e:
 
-        HTMLResponse(f"Error de comunicación: {e}")
+        return HTMLResponse(f"Error de comunicación: {e}")
     
     RegisterService(db).update_registers(meassures)
 
