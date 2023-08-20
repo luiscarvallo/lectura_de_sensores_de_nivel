@@ -47,13 +47,19 @@ def home(request: Request):
         "message": "Vista home"
     })
 
-@app.get("/admin", response_class=HTMLResponse, dependencies=[Depends(AdminBearer())])
+@app.get("/verify_admin", response_class=HTMLResponse, dependencies=[Depends(AdminBearer())])
 def admin() -> dict:
-    return {"message" : "El usuario es admin"}
+    response = "El usuario es admin"
+    return HTMLResponse(response)
+
+@app.get("/admin2", response_class=HTMLResponse, dependencies=[Depends(AdminBearer())])
+def admin() -> dict:
+    response = "El usuario es admin"
+    return HTMLResponse(response)
 
 @app.get("/admin_view", response_class=HTMLResponse)
 def admin(request: Request):
-    return templates.TemplateResponse("admin.html", {
+    return templates.TemplateResponse("admin_view.html", {
         "request": request,
         "message": "Vista de Admin"
     })
@@ -145,8 +151,15 @@ def create(request: Request):
         "message": "Hola gente, vamos a usar html con FastAPI"
     })
 
-@app.get("/prueba2", tags=['main'], response_class=HTMLResponse, dependencies=[Depends(MyBearer())])
-def prueba() :
+@app.get("/admin", response_class=HTMLResponse)
+def create(request: Request):
+    return templates.TemplateResponse("admin.html", {
+        "request": request,
+        "message": "Login de Admin"
+    })
+
+@app.get("/prueba2", tags=['main'], response_class=HTMLResponse)
+def prueba2() :
     return """
     <html>
       <head>

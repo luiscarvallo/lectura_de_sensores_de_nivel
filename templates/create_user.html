@@ -3,23 +3,66 @@
   <head>
     <meta charset="utf-8">
     <title>Crear Usuario</title>
-    <link rel="stylesheet" href="static\styles.css">
+    <link rel="stylesheet" href="static/styles.css">
   </head>
   <body>
 
     <div class="login-box">
-      <img src="static\logo.png" class="avatar" alt="Avatar Image">
-      <h1>Crear usuario</h1>
-      <form action="http://localhost:5000/create_user", method="post">
+      <img src="static/logo.png" class="avatar" alt="Avatar Image">
+      <h1>Crear Usuario</h1>
+      <form id="login-form">
+        <!-- Resto de los campos del formulario -->
         <!-- USERNAME INPUT -->
         <label for="username">Email</label>
-        <input name="email" type="text" placeholder="usuario@induchem.com">
+        <input id="username" name="username" type="text" placeholder="usuario@induchem.com" required>
         <!-- PASSWORD INPUT -->
         <label for="password">Password</label>
-        <input name="password" type="password" placeholder="Password">
-        <input name="confirm_password" type="password" placeholder="Confirmar Password">
+        <input id="password" name="password" type="password" placeholder="Password" required>
+        <input id="confirm_password" name="confirm_password" type="password" placeholder="Confirmar Password" required>
         <input type="submit" value="Crear Usuario">
       </form>
+      <input type="submit" value="Volver" onclick="">
+      <div id="message-container" style="display: none;">
+
+      </div>
+
+      <script>
+        function create_user(event) {
+          event.preventDefault();
+          const form = new FormData();
+          if (getElementById())
+          form.append("username", document.getElementById("username").value);
+          form.append("password", document.getElementById("password").value);
+
+          fetch("/login", {
+            method: "POST",
+            body: form,
+          })
+            .then((response) => {
+              if (!response.ok) {
+                const messageContainer = document.getElementById("message-container");
+                messageContainer.innerText = "Usuario o clave inválidos"
+                messageContainer.style.display = "block";
+                throw new Error("Usuario o clave inválidos");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              localStorage.setItem("token", data.access_token);
+              window.location.href = "/view1";
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+          const loginForm = document.getElementById("login-form");
+          loginForm.addEventListener("submit", function (event) {
+            login(event);
+          });
+        });
+      </script>
     </div>
+
   </body>
 </html>

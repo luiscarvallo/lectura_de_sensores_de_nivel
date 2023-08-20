@@ -17,7 +17,6 @@
         </div>
 
         <script>
-
             function fetchAdmin() {
                 const token = localStorage.getItem("token");
                 fetch("/admin", {
@@ -26,13 +25,28 @@
                         },
                     })
                     .then((response) => {
-                        if (response.ok) {
-                            window.location.href = "/admin";
-                        } else {
-                            window.location.href = "/image";
+                        if (!response.ok) {
+                            fetchPrueba2();
                         }
                 })
             }
+
+            function fetchPrueba2(){
+                const token = localStorage.getItem("token");
+                fetch("/prueba2", {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    })
+                    .then((response) => {
+                        if (!response.ok) {
+                            window.location.href = "/";
+                            throw new Error("Acceso denegado.");
+                        }
+
+                    })
+            }
+
             fetchAdmin();
         </script>
     </body>

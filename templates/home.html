@@ -19,6 +19,7 @@
         <label for="password">Password</label>
         <input id="password" name="password" type="password" placeholder="Password" required>
         <input type="submit" value="Log In">
+        <a href="/admin">Ingresar como Admin</a>
       </form>
       <div id="message-container" style="display: none;">
 
@@ -46,8 +47,7 @@
             })
             .then((data) => {
               localStorage.setItem("token", data.access_token);
-              const token = localStorage.getItem("token")
-              window.location.href = "/view2";
+              window.location.href = "/view1";
             })
             .catch((error) => {
               console.error(error);
