@@ -32,7 +32,7 @@ class UserService():
             return False
         return user
 
-    def create_user(self, username: str, user_role: str, admin: bool) -> None:
+    def create_user(self, username: str, user_role: str) -> None:
         
         user = self.get_user(username=username)
 
@@ -41,7 +41,7 @@ class UserService():
 
         pw = 12345
         hashed_password = get_password_hash(password=pw)
-        new_user = UserModel(email=username, password=hashed_password, user_role=user_role, admin=admin, first_connection=True)
+        new_user = UserModel(email=username, password=hashed_password, user_role=user_role, admin=False, first_connection=True)
 
         self.db.add(new_user)
         self.db.commit()

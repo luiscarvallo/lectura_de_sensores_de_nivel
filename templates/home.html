@@ -48,12 +48,38 @@
             })
             .then((data) => {
               localStorage.setItem("token", data.access_token);
-              window.location.href = "/view1";
+              verifyFirstConnection();
             })
             .catch((error) => {
               console.error(error);
             });
         }
+
+        function verifyFirstConnection() {
+          const token = localStorage.getItem("token");
+
+          fetch("/verify_first_connection", {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+          })
+          .then((response) => {
+              if (!response.ok) {
+                  window.location.href = "/view1";
+                  throw new Error("No es first connection");
+              }
+              return response.json();
+          })
+
+          .then((data) => {
+            window.location.href = "/change_password_view";
+            })
+
+          .catch((error) => {
+              console.error(error);
+          });
+      }
+
         document.addEventListener("DOMContentLoaded", function () {
           const loginForm = document.getElementById("login-form");
           loginForm.addEventListener("submit", function (event) {

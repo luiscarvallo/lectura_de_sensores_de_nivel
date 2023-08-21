@@ -17,10 +17,10 @@ def login(form: OAuth2PasswordRequestForm = Depends()):
     return JSONResponse(status_code=200, content={"access_token" : access_token, "token_type" : "bearer"})
 
 @users_router.post('/create_user',tags=['users'], response_model=dict, status_code=200, dependencies=[Depends(AdminBearer())])
-def create_user(username: str = Form(), user_role: str = Form(), admin: bool = Form()):
+def create_user(username: str = Form(), user_role: str = Form()):
     db = Session()
     
-    UserService(db).create_user(username=username, user_role=user_role, admin=bool(admin))
+    UserService(db).create_user(username=username, user_role=user_role)
 
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={"message" : "El usuario fue creado con éxito"})
 

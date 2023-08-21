@@ -11,15 +11,12 @@
       <img src="static/logo.png" class="avatar" alt="Avatar Image">
       <h1>Crear Usuario</h1>
       <form id="login-form">
-        <!-- Resto de los campos del formulario -->
         <!-- USERNAME INPUT -->
         <label for="username">Email</label>
         <input id="username" name="username" type="text" placeholder="usuario@induchem.com" required>
-        <!-- PASSWORD INPUT -->
+        <!-- USERROLE INPUT -->
         <label for="user_role">Rol del usuario</label>
         <input id="user_role" name="user_role" type="text" placeholder="Rol de usuario" required>
-        <label for="is_admin">Es admin?</label>
-        <input id="is_admin" name="is_admin" type="text" placeholder="False" required>
         <input type="submit" value="Crear Usuario">
       </form>
       <input type="submit" value="Volver" onclick="btnReturn()">
@@ -32,18 +29,9 @@
           event.preventDefault();
           const token = localStorage.getItem("token");
           const form = new FormData();
-          //const pwd = document.getElementById("password").value
-          //const confirm_pwd = document.getElementById("confirm_password").value
-          //if (pwd != confirm_pwd){
-          //  const messageContainer = document.getElementById("message-container");
-          //  messageContainer.innerText = "Las contraseñas no coinciden"
-          //  messageContainer.style.display = "block";
-          //  throw new Error("Las contraseñas no coinciden");
-          //}
 
           form.append("username", document.getElementById("username").value);
           form.append("user_role", document.getElementById("user_role").value);
-          form.append("is_admin", document.getElementById("is_admin").value);
 
           fetch("/create_user", {
             method: "POST",
@@ -64,30 +52,26 @@
             .catch((error) => {
               console.error(error);
             });
-
-            //const messageContainer = document.getElementById("message-container");
-            //messageContainer.innerText = "El usuario fue creado con éxito"
-            //messageContainer.style.display = "block";
         }
 
         function fetchAdmin() {
-                const token = localStorage.getItem("token");
+          const token = localStorage.getItem("token");
 
-                fetch("/verify_admin", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
-                .then((response) => {
-                    if (!response.ok) {
-                        window.location.href = "/";
-                        throw new Error("Acceso denegado.");
-                    }
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-            }
+          fetch("/verify_admin", {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+          })
+          .then((response) => {
+              if (!response.ok) {
+                  window.location.href = "/";
+                  throw new Error("Acceso denegado.");
+              }
+          })
+          .catch((error) => {
+              console.error(error);
+          });
+      }
         function btnReturn() {
           window.location.href = "/admin_view";
         }

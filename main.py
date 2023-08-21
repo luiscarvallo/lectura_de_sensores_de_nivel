@@ -90,6 +90,13 @@ def create_user_view(request: Request):
         "message": "Vista de creación de usuario"
     })
 
+@app.get("/change_password_view", response_class=HTMLResponse)
+def change_password_view(request: Request):
+    return templates.TemplateResponse("change_password.html", {
+        "request": request,
+        "message": "Vista de cambio de contraseña"
+    })
+
 @app.get("/image", dependencies=[Depends(MyBearer())])
 def image():
     db = Session()
