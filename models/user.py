@@ -9,4 +9,4 @@ class User(Base):
     password = Column(String)
     user_role = Column(String)
     admin = Column(Boolean)
-    disabled = Column(Boolean)
+    first_connection = Column(Boolean)

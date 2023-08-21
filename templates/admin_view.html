@@ -9,7 +9,7 @@
         <div class="admin-box">
             <img src="static/logo.png" class="avatar" alt="Avatar Image">
             <h1>Menú de Admin</h1>
-            <input type="submit" value="Crear Usuario" onclick="">
+            <input type="submit" value="Crear Usuario" onclick="createUserView()">
             <input type="submit" value="Modificar Usuario" onclick="">
             <input type="submit" value="Resetear Usuario" onclick="">
             <input type="submit" value="Eliminar Usuario" onclick="">
@@ -43,6 +43,11 @@
                 window.location.href = "/";
             }
             // Llamamos a la función para obtener la imagen al cargar la página
+
+            function createUserView(){
+                window.location.href = "/create_user_view";
+            }
+
             fetchAdmin();
         </script>
     </body>
