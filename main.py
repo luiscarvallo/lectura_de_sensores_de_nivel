@@ -32,6 +32,8 @@ app.add_middleware(ErrorHandler)
 # Base de datos
 Base.metadata.create_all(bind=engine)
 
+fig, axes = plt.subplots(2, 2)
+
 # Método get que realiza la lectura de los registros, lo envía a la base de datos y retorna una respuesta HTMLResponse con las lecturas.
 @app.get("/", tags=['main'])
 def run() -> HTMLResponse:
@@ -58,7 +60,7 @@ def run() -> HTMLResponse:
     
     RegisterService(db).update_registers(meassures)
 
-    fig, axes = plt.subplots(2, 2)
+    
 
     for i in range(2):
         for j in range(2):
