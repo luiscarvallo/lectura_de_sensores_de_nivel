@@ -32,10 +32,25 @@ class UserService():
             return False
         return user
 
-    def create_user(self, username: str, password: str, confirm_password: str) -> None:
+    def create_user(self, username: str, user_role: str, admin: bool) -> None:
+        
+        user = self.get_user(username=username)
 
-        if password != confirm_password:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Las contraseñas no coinciden")
+        if user:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="El email ya ha sido registrado")
+
+        pw = 12345
+        hashed_password = get_password_hash(password=pw)
+        new_user = UserModel(email=username, password=hashed_password, user_role=user_role, admin=admin, first_connection=True)
+
+        self.db.add(new_user)
+        self.db.commit()
+
+        return    
+    
+    def create_first_user(self, username: str, password: str, user_role: str, admin: bool, first_connection: bool) -> None:
+
+        
         
         user = self.get_user(username=username)
 
@@ -43,12 +58,24 @@ class UserService():
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="El email ya ha sido registrado")
 
         hashed_password = get_password_hash(password=password)
-        new_user = UserModel(email=username, password=hashed_password, disabled=False)
+        new_user = UserModel(email=username, password=hashed_password, user_role=user_role, admin=admin, first_connection=first_connection)
 
         self.db.add(new_user)
         self.db.commit()
 
         return
+
+    def change_password(self, token: Annotated[str, Depends(oauth2_scheme)], password: str, confirm_password: str) -> None:
+
+        if password != confirm_password:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Las contraseñas no coinciden")
+
+        current_user = self.get_current_user(token=token)
+
+        current_user.password = get_password_hash(password=password)
+
+        return
+
 
     def get_current_user(self, token: Annotated[str, Depends(oauth2_scheme)]):
         credentials_exception = HTTPException(

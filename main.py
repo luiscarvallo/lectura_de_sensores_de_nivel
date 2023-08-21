@@ -71,6 +71,13 @@ def view1(request: Request):
         "message": "Hola gente, vamos a usar html con FastAPI"
     })
 
+@app.get("/create_user_view", response_class=HTMLResponse)
+def create_user_view(request: Request):
+    return templates.TemplateResponse("create_user.html", {
+        "request": request,
+        "message": "Vista de creación de usuario"
+    })
+
 @app.get("/image", dependencies=[Depends(MyBearer())])
 def image():
     db = Session()
