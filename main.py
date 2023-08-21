@@ -47,9 +47,21 @@ def home(request: Request):
         "message": "Vista home"
     })
 
+@app.get("/change_password_view", response_class=HTMLResponse)
+def change_password_view(request: Request):
+    return templates.TemplateResponse("change_password.html", {
+        "request": request,
+        "message": "Vista home"
+    })
+
 @app.get("/verify_admin", response_class=HTMLResponse, dependencies=[Depends(AdminBearer())])
-def admin() -> dict:
+def admin() -> HTMLResponse:
     response = "El usuario es admin"
+    return HTMLResponse(response)
+
+@app.get("/verify_token", response_class=HTMLResponse, dependencies=[Depends(MyBearer())])
+def verify_token() -> HTMLResponse:
+    response = "El usuario está autorizado"
     return HTMLResponse(response)
 
 @app.get("/admin2", response_class=HTMLResponse, dependencies=[Depends(AdminBearer())])

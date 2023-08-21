@@ -49,8 +49,6 @@ class UserService():
         return    
     
     def create_first_user(self, username: str, password: str, user_role: str, admin: bool, first_connection: bool) -> None:
-
-        
         
         user = self.get_user(username=username)
 
@@ -73,6 +71,7 @@ class UserService():
         current_user = self.get_current_user(token=token)
 
         current_user.password = get_password_hash(password=password)
+        current_user.first_connection = False
 
         return
 

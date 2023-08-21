@@ -49,6 +49,7 @@ def change_password(token: str, password: str = Form(), confirm_password: str = 
     return JSONResponse(content={'message' : 'Se modificó la contraseña'}, status_code=200)
 
 
+
 @users_router.put('/modify_user', tags=['users'], response_model=dict, status_code=200, dependencies=[Depends(AdminBearer())])
 def modify_user(username: str, user: User) -> dict:
     db = Session()

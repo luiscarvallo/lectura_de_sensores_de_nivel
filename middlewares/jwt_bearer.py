@@ -19,3 +19,12 @@ class AdminBearer(HTTPBearer):
         current_user = UserService(db).verify_admin(auth.credentials)
         if not current_user:
             raise HTTPException(status_code=403, detail="El usuario no es un admin")
+
+
+class FirstConnectionBearer(HTTPBearer):
+    async def __call__(self, request: Request):
+        auth = await super().__call__(request)
+        db = Session()
+        current_user = UserService(db).verify_first_connection(auth.credentials)
+        if not current_user:
+            raise HTTPException(status_code=403, detail="No es la primera conexión")
