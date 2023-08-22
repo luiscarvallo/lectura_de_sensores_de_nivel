@@ -5,5 +5,8 @@ venvSensores
 __pycache__
 venv
 .DS_Store
+<<<<<<< HEAD
 database.sqlite
+=======
+>>>>>>> e8c92ea6a4a435ef22bb2f1a69e6010e2f70693a
 database.sqlite
