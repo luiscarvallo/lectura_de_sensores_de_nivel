@@ -5,3 +5,5 @@ venvSensores
 __pycache__
 venv
 .DS_Store
+database.sqlite
+database.sqlite
