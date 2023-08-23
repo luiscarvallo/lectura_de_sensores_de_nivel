@@ -2,42 +2,32 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Crear Usuario</title>
-    <link rel="stylesheet" href="static/admin-styles.css">
+    <title>Reiniciar Usuario</title>
+    <link rel="stylesheet" href="static/styles.css">
   </head>
   <body>
 
-    <div class="admin-box">
+    <div class="login-box">
       <img src="static/logo.png" class="avatar" alt="Avatar Image">
-      <h1>Crear Usuario</h1>
+      <h1>Reiniciar Usuario</h1>
       <form id="login-form">
         <!-- USERNAME INPUT -->
         <label for="username">Email</label>
         <input id="username" name="username" type="text" placeholder="usuario@induchem.com" required>
-        <!-- USERROLE INPUT -->
-        <label for="user_role">Rol del usuario</label>
-        <input id="user_role" name="user_role" type="text" placeholder="Rol de usuario" required>
-        <label for="admin">Es admin?</label>
-        <input id="admin" name="admin" type="text" placeholder="Escriba True si es admin" required>
-        <input type="submit" value="Crear Usuario">
+        <input type="submit" value="Reiniciar Usuario">
       </form>
       <input type="submit" value="Volver" onclick="btnReturn()">
       <div id="message-container" style="display: none;">
-
-      </div>
-
       <script>
-        function create_user(event) {
+        function reset_user(event) {
           event.preventDefault();
           const token = localStorage.getItem("token");
           const form = new FormData();
 
           form.append("username", document.getElementById("username").value);
-          form.append("user_role", document.getElementById("user_role").value);
-          form.append("admin", document.getElementById("admin").value);
 
-          fetch("/create_user", {
-            method: "POST",
+          fetch("/reset_user", {
+            method: "PUT",
             body: form,
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -50,7 +40,7 @@
               return response.json();
             })
             .then((data) => {
-              window.alert("El usuario fue creado con éxito")
+              window.alert("El usuario fue reiniciado con éxito")
             })
             .catch((error) => {
               console.error(error);
@@ -81,7 +71,7 @@
         document.addEventListener("DOMContentLoaded", function () {
           const loginForm = document.getElementById("login-form");
           loginForm.addEventListener("submit", function (event) {
-            create_user(event);
+            reset_user(event);
           });
         });
         fetchAdmin()

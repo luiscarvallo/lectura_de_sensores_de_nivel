@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Eliminar Usuario</title>
+    <link rel="stylesheet" href="static/styles.css">
+  </head>
+  <body>
+
+    <div class="login-box">
+        <img src="static/logo.png" class="avatar" alt="Avatar Image">
+        <h1>Eliminar Usuario</h1>
+        <form id="login-form">
+            <!-- USERNAME INPUT -->
+            <label for="username">Email</label>
+            <input id="username" name="username" type="text" placeholder="usuario@induchem.com" required>
+            <input type="submit" value="Eliminar Usuario">
+        </form>
+        <input type="submit" value="Volver" onclick="btnReturn()">
+        <div id="message-container" style="display: none;">
+        <script>
+        function delete_user(event) {
+            event.preventDefault();
+            const token = localStorage.getItem("token");
+            const form = new FormData();
+
+            form.append("username", document.getElementById("username").value);
+
+            fetch("/delete_user", {
+            method: "DELETE",
+            body: form,
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            })
+            .then((response) => {
+                if (!response.ok) {
+                throw new Error("Ocurrió un error");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                window.alert("El usuario fue eliminado con éxito")
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+        }
+
+        function fetchAdmin() {
+            const token = localStorage.getItem("token");
+
+            fetch("/verify_admin", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    window.location.href = "/";
+                    throw new Error("Acceso denegado.");
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+        }
+        function btnReturn() {
+            window.location.href = "/admin_view";
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            const loginForm = document.getElementById("login-form");
+            loginForm.addEventListener("submit", function (event) {
+            delete_user(event);
+            });
+        });
+        fetchAdmin()
+        </script>
+    </div>
+
+  </body>
+</html>

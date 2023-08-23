@@ -32,7 +32,7 @@ class UserService():
             return False
         return user
 
-    def create_user(self, username: str, user_role: str) -> None:
+    def create_user(self, username: str, user_role: str, admin: str) -> None:
         
         user = self.get_user(username=username)
 
@@ -41,7 +41,13 @@ class UserService():
 
         pw = "12345"
         hashed_password = get_password_hash(password=pw)
-        new_user = UserModel(email=username, password=hashed_password, user_role=user_role, admin=False, first_connection=True)
+
+        if admin == "True":
+            admin = True
+        else:
+            admin = False
+
+        new_user = UserModel(email=username, password=hashed_password, user_role=user_role, admin=admin, first_connection=True)
 
         self.db.add(new_user)
         self.db.commit()
@@ -135,14 +141,13 @@ class UserService():
     ):
         return current_user
 
-    def modify_user(self, username: str, user: User):
-        result = self.get_user(username=username)
+    def modify_user(self, username: str, user_role: str, admin: bool):
+        user = self.get_user(username=username)
 
-        result.email = user.email
-        result.password = get_password_hash(password=user.password)
-        result.user_role = user.user_role
-        result.admin = user.admin
-        result.disabled = user.disabled
+        user.user_role = user_role
+        user.admin = admin
+        user.first_connection = True
+        user.password = get_password_hash(password="12345")
 
         self.db.commit()
         
@@ -163,4 +168,15 @@ class UserService():
             raise HTTPException(status_code=400, detail="Not first connection")
 
         return current_user
+    
+    def reset_user(self, username: str) -> None:
+        user = self.get_user(username=username)
+
+        user.password = get_password_hash(password="12345")
+        user.admin = False
+        user.first_connection = True
+
+        self.db.commit()
+
+        return
 

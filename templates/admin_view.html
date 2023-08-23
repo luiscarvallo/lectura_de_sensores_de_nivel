@@ -10,10 +10,9 @@
             <img src="static/logo.png" class="avatar" alt="Avatar Image">
             <h1>Menú de Admin</h1>
             <input type="submit" value="Crear Usuario" onclick="createUserView()">
-            <input type="submit" value="Modificar Usuario" onclick="">
-            <input type="submit" value="Resetear Usuario" onclick="">
-            <input type="submit" value="Eliminar Usuario" onclick="">
-            <input type="submit" value="Ver Gráficas" onclick="">
+            <input type="submit" value="Resetear Usuario" onclick="resetUserView()">
+            <input type="submit" value="Eliminar Usuario" onclick="deleteUserView()">
+            <input type="submit" value="Ver Gráficas" onclick="graphicView()">
             <input type="submit" value="Cerrar Sesión" onclick="closeSession()">
         </div>
 
@@ -46,6 +45,18 @@
 
             function createUserView(){
                 window.location.href = "/create_user_view";
+            }
+
+            function deleteUserView() {
+                window.location.href = "/delete_user_view";
+            }
+
+            function graphicView() {
+                window.location.href = "/view1";
+            }
+
+            function resetUserView() {
+                window.location.href = "/reset_user_view";
             }
 
             fetchAdmin();

@@ -40,6 +40,8 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
+fig, axes = plt.subplots(1, 4)
+
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse("home.html", {
@@ -81,11 +83,25 @@ def admin(request: Request):
         "message": "Vista de Admin"
     })
 
-@app.get("/view2", response_class=HTMLResponse)
-def view1(request: Request):
-    return templates.TemplateResponse("view2.html", {
+@app.get("/delete_user_view", response_class=HTMLResponse)
+def admin(request: Request):
+    return templates.TemplateResponse("delete_user.html", {
         "request": request,
-        "message": "Hola gente, vamos a usar html con FastAPI"
+        "message": "Vista de eliminar usuario"
+    })
+
+@app.get("/reset_user_view", response_class=HTMLResponse)
+def admin(request: Request):
+    return templates.TemplateResponse("reset_user.html", {
+        "request": request,
+        "message": "Vista de reiniciar usuario"
+    })
+
+@app.get("/view1", response_class=HTMLResponse)
+def view1(request: Request):
+    return templates.TemplateResponse("view1.html", {
+        "request": request,
+        "message": "Vista de gráficas"
     })
 
 @app.get("/create_user_view", response_class=HTMLResponse)
@@ -126,7 +142,7 @@ def image():
     
     RegisterService(db).update_registers(meassures)
 
-    fig, axes = plt.subplots(1, 4)
+
 
     for i in range(len(tanks)):
         axes[i].clear()

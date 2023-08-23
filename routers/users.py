@@ -17,10 +17,10 @@ def login(form: OAuth2PasswordRequestForm = Depends()):
     return JSONResponse(status_code=200, content={"access_token" : access_token, "token_type" : "bearer"})
 
 @users_router.post('/create_user',tags=['users'], response_model=dict, status_code=200, dependencies=[Depends(AdminBearer())])
-def create_user(username: str = Form(), user_role: str = Form()):
+def create_user(username: str = Form(), user_role: str = Form(), admin: str = Form()):
     db = Session()
     
-    UserService(db).create_user(username=username, user_role=user_role)
+    UserService(db).create_user(username=username, user_role=user_role, admin=admin)
 
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={"message" : "El usuario fue creado con éxito"})
 
@@ -48,23 +48,29 @@ def change_password(token: str = Form(), password: str = Form(), confirm_passwor
 
     return JSONResponse(content={'message' : 'Se modificó la contraseña'}, status_code=200)
 
-
-
 @users_router.put('/modify_user', tags=['users'], response_model=dict, status_code=200, dependencies=[Depends(AdminBearer())])
-def modify_user(username: str, user: User) -> dict:
+def modify_user(username: str = Form(), user_role: str = Form(), admin: bool = Form()) -> dict:
     db = Session()
 
-    UserService(db).modify_user(username=username, user=user)
+    UserService(db).modify_user(username=username, user_role=user_role, admin=admin)
 
     return JSONResponse(content={'message' : 'Se modificó el usuario'}, status_code=200)
 
 @users_router.delete('/delete_user', tags=['users'], response_model=dict, status_code=200, dependencies=[Depends(AdminBearer())])
-def delete_user(username: str) -> dict:
+def delete_user(username: str = Form()) -> dict:
     db = Session()
 
     UserService(db).delete_user(username=username)
 
     return JSONResponse(content={'message' : 'Se eliminó el usuario'}, status_code=200)
+
+@users_router.put('/reset_user', tags=['users'], response_model=dict, status_code=200, dependencies=[Depends(AdminBearer())])
+def reset_user(username: str = Form()) -> dict:
+    db = Session()
+
+    UserService(db).reset_user(username=username)
+
+    return JSONResponse(content={'message' : 'Se reinició el usuario'}, status_code=200)
 
 #@users_router.post('/verify_admin', tags=['users'], response_model=dict, status_code=200)
 #def verify_admin(token: str) -> dict:
