@@ -59,21 +59,20 @@
           const token = localStorage.getItem("token");
 
           fetch("/verify_first_connection", {
-              headers: {
-                  Authorization: `Bearer ${token}`,
-              },
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
           })
           .then((response) => {
               if (!response.ok) {
                   window.location.href = "/view1";
                   throw new Error("No es first connection");
               }
+              window.location.href = "/change_password_view";
               return response.json();
+              
           })
-
-          .then((data) => {
-            window.location.href = "/change_password_view";
-            })
 
           .catch((error) => {
               console.error(error);

@@ -17,7 +17,7 @@ from schemas.user import User
 from fastapi import Depends, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from middlewares.jwt_bearer import MyBearer, AdminBearer
+from middlewares.jwt_bearer import MyBearer, AdminBearer, FirstConnectionBearer
 from numpy import random
 
 # Inicialización de la app
@@ -51,7 +51,7 @@ def home(request: Request):
 def change_password_view(request: Request):
     return templates.TemplateResponse("change_password.html", {
         "request": request,
-        "message": "Vista home"
+        "message": "Vista de cambio de usuario"
     })
 
 @app.get("/verify_admin", response_class=HTMLResponse, dependencies=[Depends(AdminBearer())])
@@ -62,6 +62,11 @@ def admin() -> HTMLResponse:
 @app.get("/verify_token", response_class=HTMLResponse, dependencies=[Depends(MyBearer())])
 def verify_token() -> HTMLResponse:
     response = "El usuario está autorizado"
+    return HTMLResponse(response)
+
+@app.get("/verify_first_connection", response_class=HTMLResponse, dependencies=[Depends(FirstConnectionBearer())])
+def admin() -> HTMLResponse:
+    response = "El usuario es admin"
     return HTMLResponse(response)
 
 @app.get("/admin2", response_class=HTMLResponse, dependencies=[Depends(AdminBearer())])

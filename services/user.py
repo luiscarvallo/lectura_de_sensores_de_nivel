@@ -39,7 +39,7 @@ class UserService():
         if user:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="El email ya ha sido registrado")
 
-        pw = 12345
+        pw = "12345"
         hashed_password = get_password_hash(password=pw)
         new_user = UserModel(email=username, password=hashed_password, user_role=user_role, admin=False, first_connection=True)
 
@@ -70,8 +70,12 @@ class UserService():
 
         current_user = self.get_current_user(token=token)
 
-        current_user.password = get_password_hash(password=password)
-        current_user.first_connection = False
+        user = self.get_user(username=current_user.email)
+
+        user.password = get_password_hash(password=password)
+        user.first_connection = False
+
+        self.db.commit()
 
         return
 
@@ -151,4 +155,12 @@ class UserService():
         self.db.commit()
 
         return
+
+    def verify_first_connection(self, token: Annotated[str, Depends(oauth2_scheme)]):
+        current_user = self.get_current_user(token=token)
+
+        if not current_user.first_connection:
+            raise HTTPException(status_code=400, detail="Not first connection")
+
+        return current_user
 

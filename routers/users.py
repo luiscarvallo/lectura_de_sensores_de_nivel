@@ -41,7 +41,7 @@ def create_user(username: str = Form(), password: str = Form(), confirm_password
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={"message" : "El usuario fue creado con éxito"})
 
 @users_router.put('/change_password', tags=['users'], response_model=dict, status_code=200, dependencies=[Depends(MyBearer())])
-def change_password(token: str, password: str = Form(), confirm_password: str = Form()) -> dict:
+def change_password(token: str = Form(), password: str = Form(), confirm_password: str = Form()) -> dict:
     db = Session()
 
     UserService(db).change_password(token=token, password=password, confirm_password=confirm_password)
