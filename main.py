@@ -97,6 +97,27 @@ def admin(request: Request):
         "message": "Vista de reiniciar usuario"
     })
 
+@app.get("/user_management_view", response_class=HTMLResponse)
+def admin(request: Request):
+    return templates.TemplateResponse("user_management_view.html", {
+        "request": request,
+        "message": "Vista de gestión de usuario"
+    })
+
+@app.get("/controller_management_view", response_class=HTMLResponse)
+def admin(request: Request):
+    return templates.TemplateResponse("controller_management_view.html", {
+        "request": request,
+        "message": "Vista de gestión de controladores"
+    })
+
+@app.get("/register_management_view", response_class=HTMLResponse)
+def admin(request: Request):
+    return templates.TemplateResponse("register_management_view.html", {
+        "request": request,
+        "message": "Vista de gestión de registros"
+    })
+
 @app.get("/view1", response_class=HTMLResponse)
 def view1(request: Request):
     return templates.TemplateResponse("view1.html", {

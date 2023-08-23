@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Gestión de Usuarios</title>
+        <link rel="stylesheet" href="static/styles.css">
+    </head>
+    <body>
+        <div class="login-box">
+            <img src="static/logo.png" class="avatar" alt="Avatar Image">
+            <h1>Gestión de Usuarios</h1>
+            <input type="submit" value="Crear Usuario" onclick="createUserView()">
+            <input type="submit" value="Reiniciar Usuario" onclick="resetUserView()">
+            <input type="submit" value="Eliminar Usuario" onclick="deleteUserView()">
+            <input type="submit" value="Regresar" onclick="btnReturn()">
+        </div>
+
+        <script>
+            function fetchAdmin() {
+                const token = localStorage.getItem("token");
+
+                fetch("/verify_admin", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                .then((response) => {
+                    if (!response.ok) {
+                        window.location.href = "/";
+                        throw new Error("Acceso denegado.");
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+            }
+
+            function btnReturn(){
+                window.location.href = "/admin_view";
+            }
+
+            function createUserView(){
+                window.location.href = "/create_user_view";
+            }
+
+            function deleteUserView() {
+                window.location.href = "/delete_user_view";
+            }
+
+            function resetUserView() {
+                window.location.href = "/reset_user_view";
+            }
+
+            fetchAdmin();
+        </script>
+    </body>
+</html>

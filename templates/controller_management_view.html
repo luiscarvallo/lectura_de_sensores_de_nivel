@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Gestión de Controladores</title>
+        <link rel="stylesheet" href="static/styles.css">
+    </head>
+    <body>
+        <div class="login-box">
+            <img src="static/logo.png" class="avatar" alt="Avatar Image">
+            <h1>Gestión de Controladores</h1>
+            <input type="submit" value="Agregar Controlador" onclick="createControllerView()">
+            <input type="submit" value="Eliminar Controlador" onclick="deleteControllerView()">
+            <input type="submit" value="Regresar" onclick="btnReturn()">
+        </div>
+
+        <script>
+            function fetchAdmin() {
+                const token = localStorage.getItem("token");
+
+                fetch("/verify_admin", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                .then((response) => {
+                    if (!response.ok) {
+                        window.location.href = "/";
+                        throw new Error("Acceso denegado.");
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+            }
+
+            function btnReturn(){
+                window.location.href = "/admin_view";
+            }
+
+            function createControllerView(){
+                window.location.href = "/create_controller_view";
+            }
+
+            function deleteControllerView() {
+                window.location.href = "/delete_controller_view";
+            }
+
+            fetchAdmin();
+        </script>
+    </body>
+</html>

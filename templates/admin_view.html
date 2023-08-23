@@ -2,22 +2,21 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Vista de Admin</title>
+        <title>Menú de Admin</title>
         <link rel="stylesheet" href="static/admin-styles.css">
     </head>
     <body>
         <div class="admin-box">
             <img src="static/logo.png" class="avatar" alt="Avatar Image">
             <h1>Menú de Admin</h1>
-            <input type="submit" value="Crear Usuario" onclick="createUserView()">
-            <input type="submit" value="Resetear Usuario" onclick="resetUserView()">
-            <input type="submit" value="Eliminar Usuario" onclick="deleteUserView()">
+            <input type="submit" value="Gestión de Usuarios" onclick="userManagementView()">
+            <input type="submit" value="Gestión de Controladores" onclick="controllerManagementView()">
+            <input type="submit" value="Gestión de Registros" onclick="registerManagementView()">
             <input type="submit" value="Ver Gráficas" onclick="graphicView()">
             <input type="submit" value="Cerrar Sesión" onclick="closeSession()">
         </div>
 
         <script>
-            // Función para obtener la imagen desde la ruta protegida
             function fetchAdmin() {
                 const token = localStorage.getItem("token");
 
@@ -41,23 +40,23 @@
                 localStorage.setItem("token", "");
                 window.location.href = "/";
             }
-            // Llamamos a la función para obtener la imagen al cargar la página
 
-            function createUserView(){
-                window.location.href = "/create_user_view";
+            function userManagementView(){
+                window.location.href = "/user_management_view";
             }
 
-            function deleteUserView() {
-                window.location.href = "/delete_user_view";
+            function controllerManagementView() {
+                window.location.href = "/controller_management_view";
+            }
+
+            function registerManagementView() {
+                window.location.href = "/register_management_view";
             }
 
             function graphicView() {
                 window.location.href = "/view1";
             }
 
-            function resetUserView() {
-                window.location.href = "/reset_user_view";
-            }
 
             fetchAdmin();
         </script>

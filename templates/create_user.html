@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title>Crear Usuario</title>
-    <link rel="stylesheet" href="static/admin-styles.css">
+    <link rel="stylesheet" href="static/create-user-styles.css">
   </head>
   <body>
 
-    <div class="admin-box">
+    <div class="create-user-box">
       <img src="static/logo.png" class="avatar" alt="Avatar Image">
       <h1>Crear Usuario</h1>
       <form id="login-form">
@@ -76,7 +76,7 @@
           });
       }
         function btnReturn() {
-          window.location.href = "/admin_view";
+          window.location.href = "/user_management_view";
         }
         document.addEventListener("DOMContentLoaded", function () {
           const loginForm = document.getElementById("login-form");

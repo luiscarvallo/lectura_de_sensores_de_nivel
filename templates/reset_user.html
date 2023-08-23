@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title>Reiniciar Usuario</title>
-    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="static/rd-styles.css">
   </head>
   <body>
 
-    <div class="login-box">
+    <div class="rd-user-box">
       <img src="static/logo.png" class="avatar" alt="Avatar Image">
       <h1>Reiniciar Usuario</h1>
       <form id="login-form">
@@ -66,7 +66,7 @@
           });
       }
         function btnReturn() {
-          window.location.href = "/admin_view";
+          window.location.href = "/user_management_view";
         }
         document.addEventListener("DOMContentLoaded", function () {
           const loginForm = document.getElementById("login-form");
