@@ -1,10 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, status, Form
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from config.database import Session
 from services.register import RegisterService
 from typing import List
 from schemas.register import Register
+from middlewares.jwt_bearer import MyBearer, AdminBearer, FirstConnectionBearer
 
 register_router = APIRouter()
 
@@ -26,10 +27,10 @@ def get_register(id:int) -> Register:
     return JSONResponse(content=jsonable_encoder(result), status_code=200)
 
 @register_router.post('/create_register', tags=['registers'], response_model=dict, status_code=200, dependencies=[Depends(AdminBearer())])
-def create_register(id: int = Form(), register_name: str = Form(), meassure: float = Form(), meassure_unit: str = Form()) -> dict:
+def create_register(id: int = Form(), register_name: str = Form(), meassure_unit: str = Form()) -> dict:
     db = Session()
 
-    RegisterService(db).create_register(id=id, register_name=register_name, meassure=meassure, meassure_unit=meassure_unit)
+    RegisterService(db).create_register(id=id, register_name=register_name, meassure_unit=meassure_unit)
 
     return JSONResponse(content={'message' : 'Se creó el registro'}, status_code=200)
 
@@ -42,9 +43,9 @@ def modify_register(id: int, register: Register) -> dict:
     return JSONResponse(content={'message' : 'Se modificó el registro'}, status_code=200)
 
 @register_router.delete('/delete_register', tags=['registers'], response_model=dict, status_code=200, dependencies=[Depends(AdminBearer())])
-def delete_register(id: int) -> dict:
+def delete_register(id: int = Form()) -> dict:
     db = Session()
 
-    RegisterService(db).delete_register(id)
+    RegisterService(db).delete_register(id=id)
 
     return JSONResponse(content={'message' : 'Se eliminó el registro'}, status_code=200)

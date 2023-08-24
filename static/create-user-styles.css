@@ -48,7 +48,7 @@ body {
     margin-bottom: 20px;
   }
   
-  .create-user-box input[type="text"], .create-user-box input[type="password"] {
+  .create-user-box input[type="text"], .create-user-box input[type="password"], .create-user-box input[type="number"] {
     border: none;
     border-bottom: 1px solid #fff;
     background: transparent;

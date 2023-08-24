@@ -48,7 +48,7 @@ body {
     margin-bottom: 20px;
   }
   
-  .rd-user-box input[type="text"], .rd-user-box input[type="password"] {
+  .rd-user-box input[type="text"], .rd-user-box input[type="password"], .rd-user-box input[type="number"] {
     border: none;
     border-bottom: 1px solid #fff;
     background: transparent;

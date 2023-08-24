@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Eliminar Registro</title>
+    <link rel="stylesheet" href="static/rd-styles.css">
+  </head>
+  <body>
+
+    <div class="rd-user-box">
+        <img src="static/logo.png" class="avatar" alt="Avatar Image">
+        <h1>Eliminar Registro</h1>
+        <form id="login-form">
+            <label for="id">ID</label>
+            <input id="id" name="id" type="number" placeholder=0 required>
+            <input type="submit" value="Eliminar Registro">
+        </form>
+        <input type="submit" value="Volver" onclick="btnReturn()">
+        <div id="message-container" style="display: none;">
+        <script>
+        function delete_register(event) {
+            event.preventDefault();
+            const token = localStorage.getItem("token");
+            const form = new FormData();
+
+            form.append("id", document.getElementById("id").value);
+
+            fetch("/delete_register", {
+            method: "DELETE",
+            body: form,
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            })
+            .then((response) => {
+                if (!response.ok) {
+                throw new Error("Ocurrió un error");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                window.alert("El registro fue eliminado con éxito")
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+        }
+
+        function fetchAdmin() {
+            const token = localStorage.getItem("token");
+
+            fetch("/verify_admin", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    window.location.href = "/";
+                    throw new Error("Acceso denegado.");
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+        }
+        function btnReturn() {
+            window.location.href = "/register_management_view";
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            const loginForm = document.getElementById("login-form");
+            loginForm.addEventListener("submit", function (event) {
+            delete_register(event);
+            });
+        });
+        fetchAdmin()
+        </script>
+    </div>
+
+  </body>
+</html>
