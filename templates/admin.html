@@ -38,9 +38,7 @@
           })
             .then((response) => {
               if (!response.ok) {
-                const messageContainer = document.getElementById("message-container");
-                messageContainer.innerText = "Usuario o clave inválidos"
-                messageContainer.style.display = "block";
+                window.alert("Usuario o clave inválidos");
                 throw new Error("Usuario o clave inválidos");
               }
               return response.json();

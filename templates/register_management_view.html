@@ -25,6 +25,7 @@
                 })
                 .then((response) => {
                     if (!response.ok) {
+                        window.alert("El usuario no posee permisos de Admin");
                         window.location.href = "/";
                         throw new Error("Acceso denegado.");
                     }

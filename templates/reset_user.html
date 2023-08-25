@@ -35,6 +35,7 @@
           })
             .then((response) => {
               if (!response.ok) {
+                window.alert("Ocurrió un error");
                 throw new Error("Ocurrió un error");
               }
               return response.json();
@@ -57,6 +58,7 @@
           })
           .then((response) => {
               if (!response.ok) {
+                window.alert("El usuario no posee permisos de Admin");
                   window.location.href = "/";
                   throw new Error("Acceso denegado.");
               }
