@@ -1,8 +1,15 @@
-from fastapi import APIRouter
-from fastapi.responses import HTMLResponse
-from fastapi import Request
+from fastapi import APIRouter, Request, Depends
+from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from services.register import RegisterService
+import matplotlib.pyplot as plt
+import io
+from models.controller import Controller as ControllerModel
+from middlewares.jwt_bearer import MyBearer
+from pyModbusTCP.client import ModbusClient
+from config.database import Session
+
 
 views_router = APIRouter()
 
@@ -10,6 +17,7 @@ views_router.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
+fig, axes = plt.subplots(2, 2)
 
 @views_router.get("/", response_class=HTMLResponse)
 def home(request: Request):
@@ -147,45 +155,46 @@ def image():
     
     RegisterService(db).update_registers(meassures)
 
-    for i in range(len(tanks)):
-        axes[i].clear()
+    for i in range(2):
+        for j in range(2):
+            axes[i, j].clear()
 
     # GRAPH FOR P-ACID-1095
     # D = 2.33 m
     # hmax = 3.66 m
     # V = 15.50 m3
     # Densidad = 1.2 g/mL (BT-CAL-037: Z:\Boletines Técnicos (Actualizados y Normalizados))
-    axes[0].bar(tanks[0], meassures[0], color='orange', label=str(meassures[0]) + ' m3')
-    axes[0].set_ylim(0, 15.50)
-    axes[0].set_ylabel('m3')
-    axes[0].legend()
+    axes[0, 0].bar(tanks[0], round(meassures[0] * 1325, 2), color='orange', label=str(round(meassures[0] * 1325, 2)) + ' kg')
+    axes[0, 0].set_ylim(0, 15.50 * 1325)
+    axes[0, 0].set_ylabel('kg')
+    axes[0, 0].legend()
 
     # GRAPH FOR P-ACID-1095 M
     # D = 1.55 m
     # hmax = 3.66 m
     # V = 6.00 m3
     # Densidad = 1.2 g/mL (BT-CAL-037: Z:\Boletines Técnicos (Actualizados y Normalizados))
-    axes[1].bar(tanks[1], meassures[1], color='orange',label=str(meassures[1]) + ' m3')
-    axes[1].set_ylim(0, 6.00)
-    axes[1].legend()
+    axes[0, 1].bar(tanks[1], round(meassures[1] * 1200, 2), color='orange',label=str(round(meassures[1] * 1200, 2)) + ' kg')
+    axes[0, 1].set_ylim(0, 6.00 * 1200)
+    axes[0, 1].legend()
 
     # GRAPH FOR ÁCIDO NÍTRICO
     # D = 3.09 m
     # hmax = 4.88 m
     # V = 36.00 m3
     # Densidad = 1.32 g/mL (HS-CAL-050: Z:\Hojas de Seguridad (Actualizadas y Normalizadas))
-    axes[2].bar(tanks[2], meassures[2], color='orange',label=str(meassures[2]) + ' m3')
-    axes[2].set_ylim(0, 36.00)
-    axes[2].legend()
+    axes[1, 0].bar(tanks[2], round(meassures[2] * 1325, 2), color='orange',label=str(round(meassures[2] * 1325, 2)) + ' kg')
+    axes[1, 0].set_ylim(0, 36.00 * 1325)
+    axes[1, 0].legend()
 
     # GRAPH FOR ÁCIDO CLORHÍDRICO
     # D = 2.91 m
     # hmax = 4.57 m
     # V = 30.00 m3
     # Densidad = 1.15 g/mL (HS-CAL-025: Z:\Hojas de Seguridad (Actualizadas y Normalizadas))
-    axes[3].bar(tanks[3], meassures[3], color='yellow',label=str(meassures[3]) + ' m3')
-    axes[3].set_ylim(0, 30.00)
-    axes[3].legend()
+    axes[1, 1].bar(tanks[3], round(meassures[3] * 1126, 2), color='yellow',label=str(round(meassures[3] * 1126, 2)) + ' kg')
+    axes[1, 1].set_ylim(0, 30.00 * 1126)
+    axes[1, 1].legend()
 
     buffer = io.BytesIO()
     plt.savefig(buffer, format='png')

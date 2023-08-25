@@ -1,12 +1,12 @@
 from fastapi import FastAPI
-from config.database import engine, Base, Session
+from config.database import engine, Base
 from middlewares.error_handler import ErrorHandler
 from routers.controller import controller_router
 from routers.register import register_router
 from routers.users import users_router
 from routers.views import views_router
 from routers.verifications import verifications_router
-import matplotlib.pyplot as plt
+from fastapi.staticfiles import StaticFiles
 
 # Inicialización de la app
 app = FastAPI()
@@ -28,4 +28,3 @@ Base.metadata.create_all(bind=engine)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-fig, axes = plt.subplots(1, 4)
