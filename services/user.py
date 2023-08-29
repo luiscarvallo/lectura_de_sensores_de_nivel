@@ -21,7 +21,7 @@ class UserService():
         self.db = db
 
     def get_user(self, username: str):
-        result = self.db.query(UserModel).filter(UserModel.email == username).first()
+        result = self.db.query(UserModel).filter(UserModel.username == username).first()
         return result
 
     def authenticate_user(self, username: str, password: str):
@@ -37,7 +37,7 @@ class UserService():
         user = self.get_user(username=username)
 
         if user:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="El email ya ha sido registrado")
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="El username ya ha sido registrado")
 
         pw = "12345"
         hashed_password = get_password_hash(password=pw)
@@ -47,7 +47,7 @@ class UserService():
         else:
             admin = False
 
-        new_user = UserModel(email=username, password=hashed_password, user_role=user_role, admin=admin, first_connection=True)
+        new_user = UserModel(username=username, password=hashed_password, user_role=user_role, admin=admin, first_connection=True)
 
         self.db.add(new_user)
         self.db.commit()
@@ -59,10 +59,10 @@ class UserService():
         user = self.get_user(username=username)
 
         if user:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="El email ya ha sido registrado")
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="El username ya ha sido registrado")
 
         hashed_password = get_password_hash(password=password)
-        new_user = UserModel(email=username, password=hashed_password, user_role=user_role, admin=admin, first_connection=first_connection)
+        new_user = UserModel(username=username, password=hashed_password, user_role=user_role, admin=admin, first_connection=first_connection)
 
         self.db.add(new_user)
         self.db.commit()
@@ -76,7 +76,7 @@ class UserService():
 
         current_user = self.get_current_user(token=token)
 
-        user = self.get_user(username=current_user.email)
+        user = self.get_user(username=current_user.username)
 
         user.password = get_password_hash(password=password)
         user.first_connection = False
@@ -125,7 +125,7 @@ class UserService():
             )
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(
-            data={"sub": user.email}, expires_delta=access_token_expires
+            data={"sub": user.username}, expires_delta=access_token_expires
         )
         return access_token
 

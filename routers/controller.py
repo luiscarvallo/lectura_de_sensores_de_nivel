@@ -27,7 +27,7 @@ def get_controller(id: int) -> Controller:
     return JSONResponse(content=jsonable_encoder(result), status_code=200)
 
 @controller_router.post('/create_controller', tags=['controllers'], response_model=dict, status_code=200)
-def create_controller(id: int = Form(), host: int = Form(), port: str = Form()) -> dict:
+def create_controller(id: str = Form(), host: str = Form(), port: str = Form()) -> dict:
     db = Session()
 
     ControllerService(db).create_controller(id=id, host=host, port=port)

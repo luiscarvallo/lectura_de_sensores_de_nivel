@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 class User(BaseModel):
-    email: str
+    username: str
     password: str
     user_role: str
     admin: bool
@@ -10,7 +10,7 @@ class User(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "email": "user@induchem.com",
+                "username": "user",
                 "password": "12345",
                 "user_role": "Ingeniero de Procesos",
                 "admin": False,
