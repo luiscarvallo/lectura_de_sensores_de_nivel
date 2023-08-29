@@ -149,6 +149,11 @@ def image():
         # 04h--> meassures[3]: ÁCIDO CLORHÍDRICO. Termiales 20 (+) y 32 (-).
         meassures = [register/100 for register in itc_650.read_holding_registers(reg_addr=1, reg_nb=len(tanks))]
 
+        meassures[0] = round(meassures[0] * 1300, 2)
+        meassures[1] = round(meassures[1] * 1200, 2)
+        meassures[2] = round(meassures[2] * 1300, 2)
+        meassures[3] = round(meassures[3] * 1120, 2)
+
     except IOError as e:
 
         HTMLResponse(f"Error de comunicación: {e}")
@@ -164,8 +169,8 @@ def image():
     # hmax = 3.66 m
     # V = 15.50 m3
     # Densidad = 1.2 g/mL (BT-CAL-037: Z:\Boletines Técnicos (Actualizados y Normalizados))
-    axes[0, 0].bar(tanks[0], round(meassures[0] * 1325, 2), color='orange', label=str(round(meassures[0] * 1325, 2)) + ' kg')
-    axes[0, 0].set_ylim(0, 15.50 * 1325)
+    axes[0, 0].bar(tanks[0], meassures[0], color='orange', label=str(meassures[0]) + ' kg')
+    axes[0, 0].set_ylim(0, 15.50 * 1300)
     axes[0, 0].set_ylabel('kg')
     axes[0, 0].legend()
 
@@ -174,7 +179,7 @@ def image():
     # hmax = 3.66 m
     # V = 6.00 m3
     # Densidad = 1.2 g/mL (BT-CAL-037: Z:\Boletines Técnicos (Actualizados y Normalizados))
-    axes[0, 1].bar(tanks[1], round(meassures[1] * 1200, 2), color='orange',label=str(round(meassures[1] * 1200, 2)) + ' kg')
+    axes[0, 1].bar(tanks[1], meassures[1], color='orange',label=str(meassures[1]) + ' kg')
     axes[0, 1].set_ylim(0, 6.00 * 1200)
     axes[0, 1].legend()
 
@@ -183,8 +188,8 @@ def image():
     # hmax = 4.88 m
     # V = 36.00 m3
     # Densidad = 1.32 g/mL (HS-CAL-050: Z:\Hojas de Seguridad (Actualizadas y Normalizadas))
-    axes[1, 0].bar(tanks[2], round(meassures[2] * 1325, 2), color='orange',label=str(round(meassures[2] * 1325, 2)) + ' kg')
-    axes[1, 0].set_ylim(0, 36.00 * 1325)
+    axes[1, 0].bar(tanks[2], meassures[2], color='orange',label=str(meassures[2]) + ' kg')
+    axes[1, 0].set_ylim(0, 36.00 * 1300)
     axes[1, 0].legend()
 
     # GRAPH FOR ÁCIDO CLORHÍDRICO
@@ -192,8 +197,8 @@ def image():
     # hmax = 4.57 m
     # V = 30.00 m3
     # Densidad = 1.15 g/mL (HS-CAL-025: Z:\Hojas de Seguridad (Actualizadas y Normalizadas))
-    axes[1, 1].bar(tanks[3], round(meassures[3] * 1126, 2), color='yellow',label=str(round(meassures[3] * 1126, 2)) + ' kg')
-    axes[1, 1].set_ylim(0, 30.00 * 1126)
+    axes[1, 1].bar(tanks[3], meassures[3], color='yellow',label=str(meassures[3]) + ' kg')
+    axes[1, 1].set_ylim(0, 30.00 * 1120)
     axes[1, 1].legend()
 
     buffer = io.BytesIO()
