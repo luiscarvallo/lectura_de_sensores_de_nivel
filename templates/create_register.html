@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Crear Registro</title>
+    <link rel="stylesheet" href="static/create-user-styles.css">
+  </head>
+  <body>
+
+    <div class="create-user-box">
+      <img src="static/logo.png" class="avatar" alt="Avatar Image">
+      <h1>Crear Registro</h1>
+      <form id="login-form">
+        <label for="id">ID</label>
+        <input id="id" name="id" type="number" placeholder=0 required>
+
+        <label for="register_name">Nombre del registro</label>
+        <input id="register_name" name="register_name" type="text" placeholder="P-ACID-1095" required>
+
+        <label for="meassure_unit">Unidad de medida</label>
+        <input id="meassure_unit" name="meassure_unit" type="text" placeholder="kg" required>
+        <input type="submit" value="Crear Registro">
+      </form>
+      <input type="submit" value="Volver" onclick="btnReturn()">
+      <div id="message-container" style="display: none;">
+
+      </div>
+
+      <script>
+        function create_register(event) {
+          event.preventDefault();
+          const token = localStorage.getItem("token");
+          const form = new FormData();
+
+          form.append("id", document.getElementById("id").value);
+          form.append("register_name", document.getElementById("register_name").value);
+          form.append("meassure_unit", document.getElementById("meassure_unit").value);
+
+          fetch("/create_register", {
+            method: "POST",
+            body: form,
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+          })
+            .then((response) => {
+              if (!response.ok) {
+                window.alert("Ocurrió un error");
+                throw new Error("Ocurrió un error");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              window.alert("El registro fue creado con éxito")
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
+
+        function fetchAdmin() {
+          const token = localStorage.getItem("token");
+
+          fetch("/verify_admin", {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+          })
+          .then((response) => {
+              if (!response.ok) {
+                window.alert("El usuario no posee permisos de Admin");
+                  window.location.href = "/";
+                  throw new Error("Acceso denegado.");
+              }
+          })
+          .catch((error) => {
+              console.error(error);
+          });
+      }
+        function btnReturn() {
+          window.location.href = "/register_management_view";
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+          const loginForm = document.getElementById("login-form");
+          loginForm.addEventListener("submit", function (event) {
+            create_register(event);
+          });
+        });
+        fetchAdmin()
+      </script>
+    </div>
+
+  </body>
+</html>

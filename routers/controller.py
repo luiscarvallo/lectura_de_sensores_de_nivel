@@ -1,10 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, status, Form
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from config.database import Session
 from services.controller import ControllerService
 from typing import List
 from schemas.controller import Controller
+from middlewares.jwt_bearer import MyBearer, AdminBearer, FirstConnectionBearer
 
 controller_router = APIRouter()
 
@@ -26,12 +27,12 @@ def get_controller(id: int) -> Controller:
     return JSONResponse(content=jsonable_encoder(result), status_code=200)
 
 @controller_router.post('/create_controller', tags=['controllers'], response_model=dict, status_code=200)
-def create_controller(controller: Controller) -> dict:
+def create_controller(id: str = Form(), host: str = Form(), port: str = Form()) -> dict:
     db = Session()
 
-    ControllerService(db).create_controller(controller)
+    ControllerService(db).create_controller(id=id, host=host, port=port)
 
-    return JSONResponse(content={'message' : 'Se creó el registro'}, status_code=200)
+    return JSONResponse(content={'message' : 'Se creó el controlador'}, status_code=200)
 
 @controller_router.put('/modify_controller', tags=['controllers'], response_model=dict, status_code=200)
 def modify_controller(id: int, controller: Controller) -> dict:
@@ -42,7 +43,7 @@ def modify_controller(id: int, controller: Controller) -> dict:
     return JSONResponse(content={'message' : 'Se modificó el registro'}, status_code=200)
 
 @controller_router.delete('/delete_controller', tags=['controllers'], response_model=dict, status_code=200)
-def delete_controller(id: int) -> dict:
+def delete_controller(id: int = Form()) -> dict:
     db = Session()
 
     ControllerService(db).delete_controller(id)

@@ -1,30 +1,24 @@
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
-from config.database import engine, Base, Session
+from config.database import engine, Base
 from middlewares.error_handler import ErrorHandler
-from services.register import RegisterService
-from services.user import UserService
-from models.controller import Controller as ControllerModel
 from routers.controller import controller_router
 from routers.register import register_router
 from routers.users import users_router
-from pyModbusTCP.client import ModbusClient
-import matplotlib.pyplot as plt
-import io
-import base64
-from typing import Annotated
-from schemas.user import User
-from fastapi import Depends, status
+from routers.views import views_router
+from routers.verifications import verifications_router
+from fastapi.staticfiles import StaticFiles
 
 # Inicialización de la app
 app = FastAPI()
 app.title = "Lectura de Sensores de Nivel"
-app.version = "0.0.1"
+app.version = "1.0.0"
 
 # Routers
 app.include_router(controller_router)
 app.include_router(register_router)
 app.include_router(users_router)
+app.include_router(views_router)
+app.include_router(verifications_router)
 
 # Middlewares
 app.add_middleware(ErrorHandler)
@@ -33,10 +27,9 @@ app.add_middleware(ErrorHandler)
 Base.metadata.create_all(bind=engine)
 
 
-# Método get que realiza la lectura de los registros, lo envía a la base de datos y retorna una respuesta HTMLResponse con las lecturas.
-@app.get("/", tags=['main'])
-def run() -> HTMLResponse:
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
+<<<<<<< HEAD
     db = Session()
 
     fig, axes = plt.subplots(2, 2)
@@ -112,3 +105,5 @@ def run() -> HTMLResponse:
     response = f'<center><h2>TANQUES LOMA LINDA</h2><img src="data:image/png;base64,{plot_data}"/></center>'
 
     return HTMLResponse(response)
+=======
+>>>>>>> 888925e2c546d3fe97fd6d9cce4892a30822faeb

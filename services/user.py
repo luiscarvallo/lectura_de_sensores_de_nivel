@@ -1,15 +1,19 @@
 from schemas.user import User
+from schemas.token import TokenData
 from models.user import User as UserModel
 from typing import Annotated
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi import Depends, status
+from fastapi.security import OAuth2PasswordBearer
+from fastapi import Depends, status, Form
 from fastapi.exceptions import HTTPException
 from utils.pw_manager import verify_password, get_password_hash
-from datetime import datetime, timedelta
+from datetime import timedelta
 from utils.jwt_manager import create_access_token
+from jose import JWTError, jwt
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
+SECRET_KEY = "07f271739b7c58bac3ae1f410c2832ea7c743e17876fba9c907ea0200f77adef"
+ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 class UserService():
@@ -17,7 +21,7 @@ class UserService():
         self.db = db
 
     def get_user(self, username: str):
-        result = self.db.query(UserModel).filter(UserModel.email == username).first()
+        result = self.db.query(UserModel).filter(UserModel.username == username).first()
         return result
 
     def authenticate_user(self, username: str, password: str):
@@ -28,19 +32,59 @@ class UserService():
             return False
         return user
 
-    def create_user(self, username: str, password: str) -> None:
+    def create_user(self, username: str, user_role: str, admin: str) -> None:
+        
         user = self.get_user(username=username)
 
         if user:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="El email ya ha sido registrado")
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="El username ya ha sido registrado")
+
+        pw = "12345"
+        hashed_password = get_password_hash(password=pw)
+
+        if admin == "True":
+            admin = True
+        else:
+            admin = False
+
+        new_user = UserModel(username=username, password=hashed_password, user_role=user_role, admin=admin, first_connection=True)
+
+        self.db.add(new_user)
+        self.db.commit()
+
+        return    
+    
+    def create_first_user(self, username: str, password: str, user_role: str, admin: bool, first_connection: bool) -> None:
+        
+        user = self.get_user(username=username)
+
+        if user:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="El username ya ha sido registrado")
 
         hashed_password = get_password_hash(password=password)
-        new_user = UserModel(email=username, password=hashed_password, disabled=False)
+        new_user = UserModel(username=username, password=hashed_password, user_role=user_role, admin=admin, first_connection=first_connection)
 
         self.db.add(new_user)
         self.db.commit()
 
         return
+
+    def change_password(self, token: Annotated[str, Depends(oauth2_scheme)], password: str, confirm_password: str) -> None:
+
+        if password != confirm_password:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Las contraseñas no coinciden")
+
+        current_user = self.get_current_user(token=token)
+
+        user = self.get_user(username=current_user.username)
+
+        user.password = get_password_hash(password=password)
+        user.first_connection = False
+
+        self.db.commit()
+
+        return
+
 
     def get_current_user(self, token: Annotated[str, Depends(oauth2_scheme)]):
         credentials_exception = HTTPException(
@@ -56,7 +100,9 @@ class UserService():
             token_data = TokenData(username=username)
         except JWTError:
             raise credentials_exception
+        
         user = self.get_user(username=token_data.username)
+
         if user is None:
             raise credentials_exception
         return user
@@ -79,21 +125,29 @@ class UserService():
             )
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(
-            data={"sub": user.email}, expires_delta=access_token_expires
+            data={"sub": user.username}, expires_delta=access_token_expires
         )
         return access_token
+
+    def verify_admin(self, token: Annotated[str, Depends(oauth2_scheme)]):
+        current_user = self.get_current_user(token=token)
+
+        if not current_user.admin:
+            raise HTTPException(status_code=400, detail="Not admin")
+        return current_user
 
     def read_users_me(self, 
         current_user: Annotated[User, Depends(get_current_active_user)]
     ):
         return current_user
 
-    def modify_user(self, username: str, user: User):
-        result = self.get_user(username=username)
+    def modify_user(self, username: str, user_role: str, admin: bool):
+        user = self.get_user(username=username)
 
-        result.email = user.email
-        result.password = get_password_hash(password=user.password)
-        result.disabled = user.disabled
+        user.user_role = user_role
+        user.admin = admin
+        user.first_connection = True
+        user.password = get_password_hash(password="12345")
 
         self.db.commit()
         
@@ -103,6 +157,25 @@ class UserService():
         result = self.get_user(username=username)
 
         self.db.delete(result)
+        self.db.commit()
+
+        return
+
+    def verify_first_connection(self, token: Annotated[str, Depends(oauth2_scheme)]):
+        current_user = self.get_current_user(token=token)
+
+        if not current_user.first_connection:
+            raise HTTPException(status_code=400, detail="Not first connection")
+
+        return current_user
+    
+    def reset_user(self, username: str) -> None:
+        user = self.get_user(username=username)
+
+        user.password = get_password_hash(password="12345")
+        user.admin = False
+        user.first_connection = True
+
         self.db.commit()
 
         return

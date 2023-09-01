@@ -1,12 +1,13 @@
-*.jpg
 *.pdf
-*.png
 venvSensores
 __pycache__
 venv
 .DS_Store
 <<<<<<< HEAD
+<<<<<<< HEAD
 database.sqlite
 =======
 >>>>>>> e8c92ea6a4a435ef22bb2f1a69e6010e2f70693a
 database.sqlite
+=======
+>>>>>>> 888925e2c546d3fe97fd6d9cce4892a30822faeb
