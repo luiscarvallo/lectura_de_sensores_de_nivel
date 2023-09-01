@@ -32,7 +32,6 @@ app.add_middleware(ErrorHandler)
 # Base de datos
 Base.metadata.create_all(bind=engine)
 
-fig, axes = plt.subplots(2, 2)
 
 # Método get que realiza la lectura de los registros, lo envía a la base de datos y retorna una respuesta HTMLResponse con las lecturas.
 @app.get("/", tags=['main'])
@@ -40,6 +39,8 @@ def run() -> HTMLResponse:
 
     db = Session()
 
+    fig, axes = plt.subplots(2, 2)
+    
     # Conexión con ITC-650 (id=1 en la base de datos)
     itc_650_db = db.query(ControllerModel).filter(ControllerModel.id==1).first()
     itc_650 = ModbusClient(host=itc_650_db.host, port=itc_650_db.port, auto_open=True)
