@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Menú de Admin</title>
+        <link rel="stylesheet" href="static/admin-styles.css">
+    </head>
+    <body>
+        <div class="admin-box">
+            <img src="static/logo.png" class="avatar" alt="Avatar Image">
+            <h1>Menú de Admin</h1>
+            <input type="submit" value="Gestión de Usuarios" onclick="userManagementView()">
+            <input type="submit" value="Gestión de Controladores" onclick="controllerManagementView()">
+            <input type="submit" value="Gestión de Registros" onclick="registerManagementView()">
+            <input type="submit" value="Ver Gráficas" onclick="graphicView()">
+            <input type="submit" value="Cerrar Sesión" onclick="closeSession()">
+        </div>
+
+        <script>
+            function fetchAdmin() {
+                const token = localStorage.getItem("token");
+
+                fetch("/verify_admin", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                .then((response) => {
+                    if (!response.ok) {
+                        window.alert("El usuario no posee permisos de Admin");
+                        window.location.href = "/";
+                        throw new Error("Acceso denegado.");
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+            }
+
+            function closeSession(){
+                localStorage.setItem("token", "");
+                window.location.href = "/";
+            }
+
+            function userManagementView(){
+                window.location.href = "/user_management_view";
+            }
+
+            function controllerManagementView() {
+                window.location.href = "/controller_management_view";
+            }
+
+            function registerManagementView() {
+                window.location.href = "/register_management_view";
+            }
+
+            function graphicView() {
+                window.location.href = "/view1";
+            }
+
+            fetchAdmin();
+        </script>
+    </body>
+</html>

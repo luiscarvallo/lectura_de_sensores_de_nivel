@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Tanques Loma Linda</title>
+        <link rel="stylesheet" href="static/graphic-styles.css">
+    </head>
+    <body>
+        <div class="graphic-box">
+            <img src="static/logo.png" class="avatar" alt="Avatar Image">
+            <h1>Tanques Loma Linda</h1>
+            <center><img alt="Image" id="graphic-image" height="450px" width="800px"></center>
+            <center>
+                <input type="submit" value="Recargar" onclick="fetchImage()">
+                <input type="submit" value="Cerrar Sesión" onclick="closeSession()">
+            </center>
+        </div>
+
+        <script>
+            // Función para obtener la imagen desde la ruta protegida
+            function fetchImage() {
+                const token = localStorage.getItem("token");
+
+                fetch("/image", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                .then((response) => {
+                    if (!response.ok) {
+                        window.location.href = "/";
+                        throw new Error("Acceso denegado.");
+                    }
+                    return response.blob();
+                })
+                .then((blob) => {
+                    // Crear una URL local para la imagen
+                    const imageURL = URL.createObjectURL(blob);
+
+                    // Mostrar la imagen en el elemento <img>
+                    const graphicImage = document.getElementById("graphic-image");
+                    graphicImage.src = imageURL;
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+            }
+
+            function closeSession(){
+                localStorage.setItem("token", "");
+                window.location.href = "/";
+            }
+            // Llamamos a la función para obtener la imagen al cargar la página
+            fetchImage();
+        </script>
+    </body>
+</html>

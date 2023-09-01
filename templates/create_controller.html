@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Crear Controlador</title>
+    <link rel="stylesheet" href="static/create-user-styles.css">
+  </head>
+  <body>
+
+    <div class="create-user-box">
+      <img src="static/logo.png" class="avatar" alt="Avatar Image">
+      <h1>Crear Controlador</h1>
+      <form id="login-form">
+        <label for="id">ID</label>
+        <input id="id" name="id" type="text" placeholder="1" required>
+
+        <label for="host">Host</label>
+        <input id="host" name="host" type="text" placeholder="192.168.0.0" required>
+
+        <label for="port">Puerto</label>
+        <input id="port" name="port" type="text" placeholder="0000" required>
+        <input type="submit" value="Crear Controlador">
+      </form>
+      <input type="submit" value="Volver" onclick="btnReturn()">
+      <div id="message-container" style="display: none;">
+
+      </div>
+
+      <script>
+        function create_controller(event) {
+          event.preventDefault();
+          const token = localStorage.getItem("token");
+          const form = new FormData();
+
+          form.append("id", document.getElementById("id").value);
+          form.append("host", document.getElementById("host").value);
+          form.append("port", document.getElementById("port").value);
+
+          fetch("/create_controller", {
+            method: "POST",
+            body: form,
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+          })
+            .then((response) => {
+              if (!response.ok) {
+                window.alert("Ocurrió un error")
+                throw new Error("Ocurrió un error");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              window.alert("El controlador fue creado con éxito")
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
+
+        function fetchAdmin() {
+          const token = localStorage.getItem("token");
+
+          fetch("/verify_admin", {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+          })
+          .then((response) => {
+              if (!response.ok) {
+                  window.location.href = "/";
+                  window.alert("El usuario no posee permisos de Admin")
+                  throw new Error("Acceso denegado.");
+              }
+          })
+          .catch((error) => {
+              console.error(error);
+          });
+      }
+        function btnReturn() {
+          window.location.href = "/controller_management_view";
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+          const loginForm = document.getElementById("login-form");
+          loginForm.addEventListener("submit", function (event) {
+            create_controller(event);
+          });
+        });
+        fetchAdmin()
+      </script>
+    </div>
+
+  </body>
+</html>

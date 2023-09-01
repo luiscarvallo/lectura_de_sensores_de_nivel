@@ -18,8 +18,8 @@ class ControllerService():
 
         return result
 
-    def create_controller(self, controller: Controller) -> None:
-        new_controller = ControllerModel(**controller.dict())
+    def create_controller(self, id: int, host: int, port: str) -> None:
+        new_controller = ControllerModel(id=id, host=host, port=port)
 
         self.db.add(new_controller)
         self.db.commit()
