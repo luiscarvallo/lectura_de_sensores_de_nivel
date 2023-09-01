@@ -2,9 +2,4 @@
 venvSensores
 __pycache__
 venv
-<<<<<<< HEAD
 .DS_Store
-database.sqlite
-=======
-.DS_Store
->>>>>>> frontend
