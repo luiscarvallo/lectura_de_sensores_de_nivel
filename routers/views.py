@@ -17,7 +17,7 @@ views_router.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
-fig, axes = plt.subplots(2, 2)
+
 
 @views_router.get("/", response_class=HTMLResponse)
 def home(request: Request):
@@ -135,6 +135,8 @@ def change_password_view(request: Request):
 def image():
     db = Session()
 
+    fig, axes = plt.subplots(2, 2)
+
     # Conexión con ITC-650 (id=1 en la base de datos)
     itc_650_db = db.query(ControllerModel).filter(ControllerModel.id==1).first()
     itc_650 = ModbusClient(host=itc_650_db.host, port=itc_650_db.port, auto_open=True)
@@ -148,6 +150,10 @@ def image():
         # 03h--> meassures[2]: ÁCIDO NÍTRICO. Termiales 21 (+) y 33 (-).
         # 04h--> meassures[3]: ÁCIDO CLORHÍDRICO. Termiales 20 (+) y 32 (-).
         meassures = [register/100 for register in itc_650.read_holding_registers(reg_addr=1, reg_nb=len(tanks))]
+
+        for i in range(len(tanks)):
+            if meassures[i] > 100.00:
+                meassures[i] = 0.0
 
         meassures[0] = round(meassures[0] * 1300, 2)
         meassures[1] = round(meassures[1] * 1200, 2)
